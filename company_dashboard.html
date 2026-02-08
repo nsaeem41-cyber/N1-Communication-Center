@@ -15,31 +15,15 @@
             --white: #ffffff;
             --radius: 15px;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; min-height: 100vh; justify-content: center; overflow-x: hidden; }
-        
-        #loginSection { 
-            background: var(--white); 
-            padding: 30px; 
-            border-radius: var(--radius); 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            width: 90%; 
-            max-width: 380px; 
-            text-align: center; 
-            border-top: 5px solid var(--primary); 
-            box-sizing: border-box; 
-        }
-        #loginSection h1 { color: #2c3e50; margin-bottom: 25px; font-size: clamp(20px, 5vw, 24px); }
-        
-        #mainPage { display: none; background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; box-sizing: border-box; }
-        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
+        .container { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; }
         .settings-icon { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 26px; z-index: 1000; color: #7f8c8d; }
         #settingsPanel { display: none; background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; }
         .dashboard-grid { display: flex; gap: 12px; margin-bottom: 25px; }
         .stat-card { flex: 1; background: #eef2f3; padding: 15px; border-radius: 12px; border-right: 5px solid var(--primary); }
-        input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; text-align: right; direction: rtl; outline: none; font-size: 16px; }
+        input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; text-align: right; direction: rtl; outline: none; }
         button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
         .btn-send { background-color: var(--success); color: white; }
-        .btn-login { background-color: var(--primary); color: white; }
         .settings-btn { background-color: var(--primary); color: white; margin-bottom: 8px; width: 100%; }
         .chart-container { width: 100%; height: 200px; margin-top: 20px; }
         .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; }
@@ -48,72 +32,64 @@
         .all-orders-table th { background-color: var(--primary); color: white; }
         .edit-btn { background-color: var(--warning); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; }
         .delete-btn { background-color: var(--danger); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; margin-right: 5px; }
-        .btn-logout { background-color: #7f8c8d; color: white; }
-        @media (max-width: 480px) { #loginSection { padding: 25px 20px; } .container { padding: 15px; } .stat-card { padding: 10px; font-size: 14px; } }
     </style>
 </head>
 <body>
 
-    <div id="loginSection">
-        <h1>تسجيل الدخول | N One</h1>
-        <input type="text" id="userInput" placeholder="اسم المستخدم">
-        <input type="password" id="passInput" placeholder="كلمة المرور">
-        <button class="btn-login" onclick="validateLogin()">دخول النظام</button>
-    </div>
-
     <div id="mainPage" class="container">
         <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
+
         <div id="settingsPanel">
             <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">إعدادات النظام المركزية</h3>
             <label>نسبة العمولة الافتراضية:</label>
             <input type="number" id="globalCommission" step="0.01" value="0.30">
+            
             <button class="settings-btn" onclick="showSection('chart')">عرض مؤشرات الأداء البيانية</button>
             <button class="settings-btn" onclick="showSection('archive')">سجل العمليات اليومي</button>
             <button class="settings-btn" onclick="showSection('monthly')">التقارير المالية والجرد</button>
+
             <div id="chartSec" class="chart-container" style="display:none;"><canvas id="revenueChart"></canvas></div>
+            
             <div id="dataSec" style="display:none;">
                 <h4 id="secTitle"></h4>
                 <div id="secTotal" style="font-weight:bold; color:#2980b9; margin-bottom:10px;"></div>
                 <div class="table-wrapper">
-                    <table class="all-orders-table"><thead id="secHead"></thead><tbody id="secBody"></tbody></table>
+                    <table class="all-orders-table">
+                        <thead id="secHead"></thead>
+                        <tbody id="secBody"></tbody>
+                    </table>
                 </div>
             </div>
+
             <button style="background-color: var(--danger); color:white;" onclick="toggleSettings()">حفظ وإغلاق النظام</button>
-            <button class="btn-logout" onclick="logout()">تسجيل الخروج من النظام</button>
         </div>
 
-        <h2 style="color: var(--primary); margin-bottom: 20px;">لوحة بيانات N One</h2>
+        <h2 id="companyTitleDisplay" style="color: var(--primary); margin-bottom: 20px;">لوحة بيانات N One</h2>
         <div class="dashboard-grid">
             <div class="stat-card"><small>صافي أرباح اليوم</small><div id="dailyProfit" style="font-weight: bold;">0.00 د.أ</div></div>
             <div class="stat-card"><small>أعلى أداء شهري</small><div id="topCaptain" style="font-weight: bold;">-</div></div>
         </div>
+        
         <input type="tel" id="phoneInput" placeholder="رقم هاتف المندوب" oninput="searchCaptainInfo()">
         <input type="text" id="nameInput" placeholder="اسم المندوب">
         <input type="text" id="locationInput" placeholder="موقع التحميل (اسم المنشأة)">
         <input type="number" id="deliveryInput" placeholder="أجرة التوصيل">
         <input type="number" id="priceInput" placeholder="قيمة الشحنة">
+        
         <button class="btn-send" onclick="processOrder()">إرسال بيانات الطلب</button>
     </div>
 
 <script>
-    // رابط المزامنة الخاص بك
-    const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/xsp51h4e6tvnw';
-
-    function validateLogin() {
-        const u = document.getElementById('userInput').value;
-        const p = document.getElementById('passInput').value;
-        if(u === "admin" && p === "n1_2026") { sessionStorage.setItem('n1_auth', 'true'); showSystem(); }
-        else { alert("بيانات الدخول غير صحيحة بوزن بلد 😊"); }
-    }
-    function showSystem() {
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('mainPage').style.display = 'block';
-        document.body.style.justifyContent = 'flex-start';
-        updateDashboard();
-        syncFromCloud(); // جلب البيانات عند فتح النظام
-    }
-    function logout() { sessionStorage.removeItem('n1_auth'); window.location.replace(window.location.pathname); }
-    if(sessionStorage.getItem('n1_auth') === 'true') { showSystem(); }
+    // الجزء البرمجي الخاص باستقبال اسم الشركة من صفحة الإدارة (إضافة خالتو ميمي)
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const activeName = sessionStorage.getItem('currentActiveCompanyName');
+        if (activeName) {
+            document.getElementById('companyTitleDisplay').innerText = "منشأة: " + activeName;
+        } else {
+            // حماية اختيارية: إذا حاول شخص الدخول مباشرة دون تسجيل دخول يعود للرئيسية
+            // window.location.href = "index.html"; 
+        }
+    });
 
     let allOrders = JSON.parse(localStorage.getItem('n1_orders')) || [];
     let myChart;
@@ -133,11 +109,10 @@
     }
 
     function updateArchive() {
-        document.getElementById('secTitle').innerText = "سجل العمليات اليوم (الحالي)";
+        document.getElementById('secTitle').innerText = "سجل العمليات المعتمد";
         document.getElementById('secHead').innerHTML = "<tr><th>التوقيت</th><th>الاسم</th><th>الموقع</th><th>إجراءات</th></tr>";
         let b = document.getElementById('secBody'); b.innerHTML = "";
-        let today = new Date().toLocaleDateString('ar-EG');
-        allOrders.slice().reverse().filter(o => o.date === today).forEach(o => {
+        allOrders.slice().reverse().forEach(o => {
             b.innerHTML += `<tr><td>${o.time}</td><td>${o.name}</td><td>${o.location}</td><td>
                 <span class="edit-btn" onclick="editOrder(${o.id})">تعديل</span>
                 <span class="delete-btn" onclick="deleteOrder(${o.id})">حذف</span>
@@ -148,39 +123,38 @@
     function editOrder(id) {
         let o = allOrders.find(x => x.id === id);
         let nD = prompt("تعديل قيمة التوصيل المعتمدة:", o.delivery);
-        if(nD !== null) { o.delivery = parseFloat(nD) || 0; localStorage.setItem('n1_orders', JSON.stringify(allOrders)); updateArchive(); updateDashboard(); }
+        if(nD !== null) o.delivery = parseFloat(nD) || 0;
+        localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+        updateArchive();
     }
 
     function deleteOrder(id) {
         if(confirm("هل أنت متأكد من حذف السجل بشكل نهائي؟")) {
             allOrders = allOrders.filter(x => x.id !== id);
             localStorage.setItem('n1_orders', JSON.stringify(allOrders));
-            updateArchive(); updateDashboard();
+            updateArchive();
         }
     }
 
     function updateMonthly() {
-        document.getElementById('secTitle').innerText = "الأرشفة التاريخية والجرد العام";
-        document.getElementById('secHead').innerHTML = "<tr><th>التاريخ</th><th>المندوب</th><th>الطلبات</th><th>العمولة</th></tr>";
+        document.getElementById('secTitle').innerText = "التقرير المالي التفصيلي";
+        document.getElementById('secHead').innerHTML = "<tr><th>المندوب</th><th>عدد الطلبات</th><th>إجمالي عمولة N One</th></tr>";
         let b = document.getElementById('secBody'); b.innerHTML = "";
-        let s = {}, t = 0;
+        let s = {}, t = 0, now = new Date().getTime(), week = 7 * 24 * 60 * 60 * 1000;
         allOrders.forEach(o => {
-            let key = `${o.date}_${o.phone}`;
-            let p = parseFloat(o.lockedCommission) || 0.3;
+            let p = (now - o.timestamp > week) ? (o.lockedCommission || 0.3) : parseFloat(document.getElementById('globalCommission').value);
             t += p;
-            if(!s[key]) s[key] = {d: o.date, n: o.name, c: 0, p: 0};
-            s[key].c++; s[key].p += p;
+            if(!s[o.phone]) s[o.phone] = {n: o.name, c: 0, p: 0};
+            s[o.phone].c++; s[o.phone].p += p;
         });
-        document.getElementById('secTotal').innerText = `إجمالي إيرادات النظام الموثقة: ${t.toFixed(2)} د.أ`;
-        Object.values(s).reverse().forEach(item => {
-            b.innerHTML += `<tr><td>${item.d}</td><td>${item.n}</td><td>${item.c}</td><td>${item.p.toFixed(2)}</td></tr>`;
-        });
+        document.getElementById('secTotal').innerText = `إجمالي إيرادات النظام: ${t.toFixed(2)} د.أ`;
+        for(let k in s) b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${s[k].p.toFixed(2)}</td></tr>`;
     }
 
     function renderChart() {
         let ctx = document.getElementById('revenueChart').getContext('2d');
         let lbs = [...Array(7)].map((_, i) => { let d = new Date(); d.setDate(d.getDate() - i); return d.toLocaleDateString('ar-EG'); }).reverse();
-        let dt = lbs.map(l => allOrders.filter(o => o.date === l).reduce((sm, o) => sm + (parseFloat(o.lockedCommission) || 0.3), 0));
+        let dt = lbs.map(l => allOrders.filter(o => o.date === l).reduce((sm, o) => sm + (o.lockedCommission || 0.3), 0));
         if(myChart) myChart.destroy();
         myChart = new Chart(ctx, { type: 'line', data: { labels: lbs, datasets: [{ label: 'مؤشر النمو المالي', data: dt, borderColor: '#3498db', fill: true, backgroundColor: 'rgba(52, 152, 219, 0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
     }
@@ -193,64 +167,27 @@
         if(found) { nmInput.value = found.name; }
     }
 
-    async function processOrder() {
+    function processOrder() {
         let ph = document.getElementById('phoneInput'), nm = document.getElementById('nameInput'), lc = document.getElementById('locationInput'), dl = document.getElementById('deliveryInput'), pr = document.getElementById('priceInput'), cm = document.getElementById('globalCommission');
         if(!ph.value || !lc.value) { alert("خطأ: يرجى استكمال كافة البيانات المطلوبة."); return; }
         
-        let mapLink = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(lc.value);
-        let entry = { 
-            id: Date.now(), 
-            timestamp: new Date().getTime(), 
-            date: new Date().toLocaleDateString('ar-EG'), 
-            time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), 
-            name: nm.value || "مندوب معتمد", 
-            phone: ph.value, 
-            location: lc.value, 
-            delivery: parseFloat(dl.value) || 0, 
-            price: parseFloat(pr.value) || 0, 
-            lockedCommission: parseFloat(cm.value) || 0.30, 
-            mapLink: mapLink 
-        };
+        let mapLink = "https://maps.google.com/?q=" + encodeURIComponent(lc.value);
+        let entry = { id: Date.now(), timestamp: new Date().getTime(), date: new Date().toLocaleDateString('ar-EG'), time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), name: nm.value || "مندوب معتمد", phone: ph.value, location: lc.value, delivery: parseFloat(dl.value) || 0, price: parseFloat(pr.value) || 0, lockedCommission: parseFloat(cm.value) || 0.30, mapLink: mapLink };
         
-        // حفظ محلي كما كان سابقاً
-        allOrders.push(entry); 
-        localStorage.setItem('n1_orders', JSON.stringify(allOrders));
-
-        // مزامنة سحابية (إضافة جديدة)
-        try {
-            fetch(SHEETDB_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: [entry] })
-            });
-        } catch(e) { console.log("Cloud Sync Error"); }
-        
-        let cO = allOrders.filter(o => o.phone === entry.phone && o.date === entry.date);
-        let msg = `إشعار طلب جديد - منصة N One\n--------------------------\nالمرسل إليه: ${entry.name}\nيرجى استلام الطلب التالي:\n\nالمصدر: ${entry.location}\nالموقع الجغرافي: ${entry.mapLink}\n\nبيانات التوصيل:\n- أجرة المندوب: ${entry.delivery} د.أ\n- قيمة الشحنة: ${entry.price} د.أ\n\nملخص النشاط اليومي:\n- إجمالي الطلبات: (${cO.length})\n- إجمالي المستحقات: ${cO.reduce((s,o)=>s+o.delivery,0).toFixed(2)} د.أ\n\nنرجو الالتزام بمعايير الجودة والوقت.`;
+        allOrders.push(entry); localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+        let cO = allOrders.filter(o => o.phone === entry.phone);
+        let msg = `إشعار طلب جديد - منصة N One\n--------------------------\nالمرسل إليه: ${entry.name}\nيرجى استلام الطلب التالي:\n\nالمصدر: ${entry.location}\nالموقع الجغرافي: ${entry.mapLink}\n\nبيانات التوصيل:\n- أجرة المندوب: ${entry.delivery} د.أ\n- قيمة الشحنة: ${entry.price} د.أ\n\nملخص النشاط اليومي:\n- إجمالي الطلبات: (${cO.length})\n- إجمالي المستحقات: ${cO.reduce((s,o)=>s+o.delivery,0)} د.أ\n\nنرجو الالتزام بمعايير الجودة والوقت.`;
         
         let fP = entry.phone.startsWith('0') ? '962' + entry.phone.substring(1) : (entry.phone.startsWith('962') ? entry.phone : '962' + entry.phone);
         window.open(`https://wa.me/${fP}?text=${encodeURIComponent(msg)}`, '_blank');
         ph.value = ""; nm.value = ""; lc.value = ""; dl.value = ""; pr.value = ""; updateDashboard();
     }
 
-    async function syncFromCloud() {
-        try {
-            const response = await fetch(SHEETDB_API_URL);
-            const data = await response.json();
-            if(data && data.length > 0) {
-                allOrders = data;
-                localStorage.setItem('n1_orders', JSON.stringify(allOrders));
-                updateDashboard();
-            }
-        } catch(e) { console.log("Load Error"); }
-    }
-
     function updateDashboard() {
         let t = new Date().toLocaleDateString('ar-EG');
-        let d = allOrders.filter(o => o.date === t).reduce((s,o)=>s+(parseFloat(o.lockedCommission)||0.3),0);
+        let d = allOrders.filter(o => o.date === t).reduce((s,o)=>s+(o.lockedCommission||0.3),0);
         document.getElementById('dailyProfit').innerText = d.toFixed(2) + " د.أ";
-        let c = {}; 
-        allOrders.filter(o => o.date === t).forEach(o => { if(o.name) c[o.name] = (c[o.name] || 0) + 1; });
+        let c = {}; allOrders.forEach(o => { if(o.name) c[o.name] = (c[o.name] || 0) + 1; });
         let top = Object.keys(c).reduce((a, b) => c[a] > c[b] ? a : b, "-");
         document.getElementById('topCaptain').innerText = top;
     }

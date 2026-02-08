@@ -3,98 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N One - نظام إدارة الشركات والاشتراكات</title>
+    <title>N One Control | بوابة الإدارة المركزية</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --bg-light: #f4f7f6;
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --bg: #f4f7f6;
             --white: #ffffff;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-light);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 95%;
-            max-width: 900px;
-            text-align: center;
-            border-top: 5px solid var(--primary-color);
-        }
-
-        h1, h2, h3 { color: var(--primary-color); }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            text-align: right;
-        }
-
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: opacity 0.3s;
-        }
-
-        .btn-main { background-color: var(--primary-color); color: white; width: 100%; padding: 15px; }
-        .btn-success { background-color: var(--success-color); color: white; }
-        .btn-danger { background-color: var(--danger-color); color: white; }
-        .btn-warning { background-color: var(--warning-color); color: white; }
-        .btn-info { background-color: #2980b9; color: white; }
-
-        .hidden { display: none; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            font-size: 14px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th { background-color: #f8f9fa; }
-
-        .status-active { color: green; font-weight: bold; }
-        .status-inactive { color: red; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 850px; border-top: 6px solid var(--primary); }
+        .hidden { display: none !important; }
+        h1, h2 { color: var(--primary); margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; text-align: right; font-size: 15px; }
+        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background: var(--accent); color: white; width: 100%; padding: 15px; font-size: 17px; }
+        .btn-save { background: var(--success); color: white; width: 100%; padding: 15px; margin-top: 10px; }
+        .btn-edit { background: var(--warning); color: white; }
+        .btn-del { background: var(--danger); color: white; }
+        .btn-logout { background: #7f8c8d; color: white; float: left; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: center; }
+        th { background: #f8f9fa; color: var(--primary); }
+        .status-active { color: var(--success); font-weight: bold; }
         .status-expired { color: #8e44ad; font-weight: bold; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: #fdfdfd;
-            padding: 20px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
+        .form-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -103,81 +39,66 @@
         <h1>تسجيل الدخول</h1>
         <input type="text" id="userInput" placeholder="اسم المستخدم">
         <input type="password" id="passInput" placeholder="كلمة المرور">
-        <button class="btn-main" onclick="validateLogin()">دخول النظام</button>
+        <button class="btn-login" onclick="validateLogin()">دخول النظام</button>
     </div>
 
-    <div id="superAdminPanel" class="container hidden">
-        <h2>لوحة التحكم المركزية - إدارة الشركات</h2>
+    <div id="adminPanel" class="container hidden">
+        <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+        <div style="clear: both;"></div>
+        <h2 id="formHeader">إضافة منشأة جديدة</h2>
         
-        <div class="form-grid">
-            <div style="grid-column: span 2;"><h3 id="formTitle">إضافة شركة واشتراك جديد</h3></div>
+        <div class="form-box">
             <input type="hidden" id="editId">
-            <input type="text" id="compName" placeholder="اسم الشركة">
-            <input type="text" id="compUser" placeholder="اسم المستخدم">
-            <input type="password" id="compPass" placeholder="كلمة المرور">
-            <select id="compPlan">
-                <option value="0">اختيار المدة (للتعديل فقط ابقها 0)</option>
-                <option value="30">اشتراك شهر (30 يوم)</option>
-                <option value="90">اشتراك 3 شهور (90 يوم)</option>
-                <option value="365">اشتراك سنة (365 يوم)</option>
-            </select>
-            <button id="saveBtn" class="btn-success" onclick="saveCompany()" style="grid-column: span 2;">اعتماد وإضافة الشركة</button>
-            <button id="cancelBtn" class="btn-danger hidden" onclick="resetForm()" style="grid-column: span 2;">إلغاء التعديل</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="compName" placeholder="اسم الشركة / المنشأة">
+                <input type="text" id="compUser" placeholder="اسم مستخدم النظام">
+                <input type="password" id="compPass" placeholder="كلمة المرور">
+                <select id="compPlan">
+                    <option value="0">تحديد مدة الاشتراك (أو ابقها 0 للتعديل)</option>
+                    <option value="30">30 يوم</option>
+                    <option value="90">90 يوم</option>
+                    <option value="365">سنة كاملة</option>
+                </select>
+            </div>
+            <button class="btn-save" id="mainActionBtn" onclick="saveCompany()">حفظ البيانات</button>
+            <button class="btn-del hidden" id="cancelEditBtn" onclick="resetForm()" style="width: 100%; margin-top: 5px;">إلغاء عملية التعديل</button>
         </div>
 
-        <h3>قائمة الشركات والاشتراكات</h3>
-        <div style="overflow-x:auto;">
-            <table id="companyTable">
-                <thead>
-                    <tr>
-                        <th>الشركة</th>
-                        <th>المستخدم</th>
-                        <th>تاريخ الانتهاء</th>
-                        <th>الحالة</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <br>
-        <button class="btn-danger" onclick="logout()">تسجيل الخروج</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>المنشأة</th>
+                    <th>المستخدم</th>
+                    <th>تاريخ الانتهاء</th>
+                    <th>حالة الحساب</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="companyTableBody"></tbody>
+        </table>
     </div>
 
     <script>
-        // تخزين بيانات الشركات في المتصفح
         let companies = JSON.parse(localStorage.getItem('n1_companies')) || [];
 
         function validateLogin() {
-            const user = document.getElementById('userInput').value;
-            const pass = document.getElementById('passInput').value;
+            const u = document.getElementById('userInput').value;
+            const p = document.getElementById('passInput').value;
 
-            // 1. دخول المسؤول (أدمن النظام)
-            if (user === "admin" && pass === "n1_2026") {
-                renderCompanyTable();
-                showPanel('superAdminPanel');
+            if (u === "admin" && p === "n1_2026") {
+                renderTable();
+                showPanel('adminPanel');
                 return;
             }
 
-            // 2. دخول الشركات (المندوبين)
-            const company = companies.find(c => c.username === user && c.password === pass);
-            if (company) {
-                const today = new Date();
-                const expiryDate = new Date(company.expiryDate);
-
-                // التأكد من حالة الحساب
-                if (company.status === 'inactive') {
-                    alert("عذراً، هذا الحساب معطل حالياً من قبل الإدارة.");
-                    return;
+            const found = companies.find(c => c.user === u && c.pass === p);
+            if (found) {
+                const now = new Date();
+                if (now > new Date(found.expiry)) {
+                    alert("عذراً، انتهت صلاحية الاشتراك.");
+                } else {
+                    window.location.href = "company_dashboard.html";
                 }
-                // التأكد من تاريخ الصلاحية
-                if (today > expiryDate) {
-                    alert("نعتذر منك، لقد انتهى اشتراك الشركة. يرجى التجديد.");
-                    return;
-                }
-
-                // إذا كان كل شيء صحيحاً، التوجيه للصفحة الثانية
-                window.location.href = "company_dashboard.html"; 
             } else {
                 alert("بيانات الدخول غير صحيحة.");
             }
@@ -190,57 +111,70 @@
             const pass = document.getElementById('compPass').value;
             const days = parseInt(document.getElementById('compPlan').value);
 
-            if (!name || !user || !pass) {
-                alert("يرجى تعبئة الحقول الأساسية.");
-                return;
-            }
+            if (!name || !user || !pass) return alert("يرجى إكمال كافة الحقول المطلوبة.");
 
             if (id) {
-                // وضع التعديل
                 companies = companies.map(c => {
                     if (c.id == id) {
-                        c.name = name;
-                        c.username = user;
-                        c.password = pass;
+                        c.name = name; c.user = user; c.pass = pass;
                         if (days > 0) {
-                            let newExpiry = new Date();
-                            newExpiry.setDate(newExpiry.getDate() + days);
-                            c.expiryDate = newExpiry.toISOString();
+                            let newExp = new Date(); newExp.setDate(newExp.getDate() + days);
+                            c.expiry = newExp.toISOString();
                         }
                     }
                     return c;
                 });
-                alert("تم تحديث بيانات الشركة بنجاح.");
+                alert("تم تحديث بيانات المنشأة بنجاح.");
             } else {
-                // وضع الإضافة الجديدة
-                if (days === 0) { alert("يرجى اختيار مدة الاشتراك."); return; }
-                let expiry = new Date();
-                expiry.setDate(expiry.getDate() + days);
-                companies.push({
-                    id: Date.now(),
-                    name: name,
-                    username: user,
-                    password: pass,
-                    expiryDate: expiry.toISOString(),
-                    status: 'active'
-                });
-                alert("تمت إضافة الشركة بنجاح.");
+                if (days === 0) return alert("يرجى تحديد مدة اشتراك صالحة.");
+                let exp = new Date(); exp.setDate(exp.getDate() + days);
+                companies.push({ id: Date.now(), name, user, pass, expiry: exp.toISOString() });
+                alert("تم إضافة المنشأة وتفعيل الحساب.");
             }
 
             localStorage.setItem('n1_companies', JSON.stringify(companies));
             resetForm();
-            renderCompanyTable();
+            renderTable();
         }
 
-        function editCompany(id) {
-            const company = companies.find(c => c.id == id);
-            document.getElementById('editId').value = company.id;
-            document.getElementById('compName').value = company.name;
-            document.getElementById('compUser').value = company.username;
-            document.getElementById('compPass').value = company.password;
-            document.getElementById('formTitle').innerText = "تعديل بيانات: " + company.name;
-            document.getElementById('saveBtn').innerText = "حفظ التعديلات";
-            document.getElementById('cancelBtn').classList.remove('hidden');
+        function editComp(id) {
+            const c = companies.find(x => x.id == id);
+            document.getElementById('editId').value = c.id;
+            document.getElementById('compName').value = c.name;
+            document.getElementById('compUser').value = c.user;
+            document.getElementById('compPass').value = c.pass;
+            document.getElementById('formHeader').innerText = "تعديل بيانات: " + c.name;
+            document.getElementById('mainActionBtn').innerText = "تحديث البيانات المعتمدة";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function deleteComp(id) {
+            if(confirm("تأكيد حذف المنشأة بشكل نهائي؟")) {
+                companies = companies.filter(c => c.id !== id);
+                localStorage.setItem('n1_companies', JSON.stringify(companies));
+                renderTable();
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('companyTableBody');
+            tbody.innerHTML = "";
+            const now = new Date();
+            companies.forEach(c => {
+                const isExp = now > new Date(c.expiry);
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.user}</td>
+                        <td>${new Date(c.expiry).toLocaleDateString('en-GB')}</td>
+                        <td class="${isExp ? 'status-expired' : 'status-active'}">${isExp ? 'منتهي' : 'نشط'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editComp(${c.id})">تعديل</button>
+                            <button class="btn-del" onclick="deleteComp(${c.id})">حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
         }
 
         function resetForm() {
@@ -249,66 +183,17 @@
             document.getElementById('compUser').value = "";
             document.getElementById('compPass').value = "";
             document.getElementById('compPlan').value = "0";
-            document.getElementById('formTitle').innerText = "إضافة شركة واشتراك جديد";
-            document.getElementById('saveBtn').innerText = "اعتماد وإضافة الشركة";
-            document.getElementById('cancelBtn').classList.add('hidden');
-        }
-
-        function renderCompanyTable() {
-            const tbody = document.querySelector('#companyTable tbody');
-            tbody.innerHTML = "";
-            const today = new Date();
-
-            companies.forEach(c => {
-                const exp = new Date(c.expiryDate);
-                const isExpired = today > exp;
-                let statusText = c.status === 'active' ? 'نشط' : 'متوقف';
-                if (isExpired) statusText = 'منتهي';
-
-                const row = `
-                    <tr>
-                        <td>${c.name}</td>
-                        <td>${c.username}</td>
-                        <td>${exp.toLocaleDateString('en-GB')}</td>
-                        <td class="${isExpired ? 'status-expired' : (c.status === 'active' ? 'status-active' : 'status-inactive')}">
-                            ${statusText}
-                        </td>
-                        <td>
-                            <button class="btn-info" onclick="editCompany(${c.id})">تعديل</button>
-                            <button class="btn-warning" onclick="toggleStatus(${c.id})">تفعيل/إيقاف</button>
-                            <button class="btn-danger" onclick="deleteCompany(${c.id})">حذف</button>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
-        }
-
-        function toggleStatus(id) {
-            companies = companies.map(c => {
-                if (c.id === id) c.status = (c.status === 'active' ? 'inactive' : 'active');
-                return c;
-            });
-            localStorage.setItem('n1_companies', JSON.stringify(companies));
-            renderCompanyTable();
-        }
-
-        function deleteCompany(id) {
-            if (confirm("هل أنت متأكد من حذف هذه الشركة نهائياً؟")) {
-                companies = companies.filter(c => c.id !== id);
-                localStorage.setItem('n1_companies', JSON.stringify(companies));
-                renderCompanyTable();
-            }
+            document.getElementById('formHeader').innerText = "إضافة منشأة جديدة";
+            document.getElementById('mainActionBtn').innerText = "حفظ البيانات";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
         function showPanel(id) {
             document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('superAdminPanel').classList.remove('hidden');
+            document.getElementById(id).classList.remove('hidden');
         }
 
-        function logout() {
-            location.reload();
-        }
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>

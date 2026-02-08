@@ -17,9 +17,14 @@
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
         .container { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; }
-        .settings-icon { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 26px; z-index: 1000; color: #7f8c8d; }
+        
+        /* تنسيق أيقونة الإعدادات وزر الخروج */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; position: absolute; top: 15px; padding: 0 20px; box-sizing: border-box; }
+        .settings-icon { cursor: pointer; font-size: 24px; color: #7f8c8d; }
+        .logout-link { cursor: pointer; font-size: 14px; color: var(--danger); font-weight: bold; text-decoration: none; border: 1px solid var(--danger); padding: 5px 10px; border-radius: 8px; }
+        
         #settingsPanel { display: none; background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; }
-        .dashboard-grid { display: flex; gap: 12px; margin-bottom: 25px; }
+        .dashboard-grid { display: flex; gap: 12px; margin-bottom: 25px; margin-top: 30px; }
         .stat-card { flex: 1; background: #eef2f3; padding: 15px; border-radius: 12px; border-right: 5px solid var(--primary); }
         input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; text-align: right; direction: rtl; outline: none; }
         button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
@@ -37,7 +42,10 @@
 <body>
 
     <div id="mainPage" class="container">
-        <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
+        <div class="top-bar">
+            <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
+            <div class="logout-link" onclick="processLogout()">تسجيل خروج</div>
+        </div>
 
         <div id="settingsPanel">
             <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">إعدادات النظام المركزية</h3>
@@ -64,7 +72,8 @@
             <button style="background-color: var(--danger); color:white;" onclick="toggleSettings()">حفظ وإغلاق النظام</button>
         </div>
 
-        <h2 id="companyTitleDisplay" style="color: var(--primary); margin-bottom: 20px;">لوحة بيانات N One</h2>
+        <h2 id="companyHeader" style="color: var(--primary); margin-bottom: 20px; margin-top: 30px;">لوحة بيانات N One</h2>
+        
         <div class="dashboard-grid">
             <div class="stat-card"><small>صافي أرباح اليوم</small><div id="dailyProfit" style="font-weight: bold;">0.00 د.أ</div></div>
             <div class="stat-card"><small>أعلى أداء شهري</small><div id="topCaptain" style="font-weight: bold;">-</div></div>
@@ -80,16 +89,24 @@
     </div>
 
 <script>
-    // الجزء البرمجي الخاص باستقبال اسم الشركة من صفحة الإدارة (إضافة خالتو ميمي)
-    window.addEventListener('DOMContentLoaded', (event) => {
+    // الحماية وجلب اسم الشركة (إضافة خالتو ميمي)
+    window.addEventListener('load', () => {
         const activeName = sessionStorage.getItem('currentActiveCompanyName');
-        if (activeName) {
-            document.getElementById('companyTitleDisplay').innerText = "منشأة: " + activeName;
+        if (!activeName) {
+            // إذا لم يسجل دخول يرجع فوراً لصفحة الدخول
+            window.location.replace("index.html");
         } else {
-            // حماية اختيارية: إذا حاول شخص الدخول مباشرة دون تسجيل دخول يعود للرئيسية
-            // window.location.href = "index.html"; 
+            document.getElementById('companyHeader').innerText = "منشأة: " + activeName;
         }
+        updateDashboard();
     });
+
+    function processLogout() {
+        if(confirm("هل تريد تسجيل الخروج من النظام؟")) {
+            sessionStorage.clear();
+            window.location.replace("index.html");
+        }
+    }
 
     let allOrders = JSON.parse(localStorage.getItem('n1_orders')) || [];
     let myChart;
@@ -191,7 +208,6 @@
         let top = Object.keys(c).reduce((a, b) => c[a] > c[b] ? a : b, "-");
         document.getElementById('topCaptain').innerText = top;
     }
-    window.onload = updateDashboard;
 </script>
 </body>
 </html>

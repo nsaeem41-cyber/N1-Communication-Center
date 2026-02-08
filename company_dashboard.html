@@ -3,59 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N One Logistics | نظام الإدارة المتكامل</title>
+    <title>N One Logistics | النظام المتكامل 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #2ecc71; --bg: #f4f7f6; --white: #ffffff; }
+        :root { --primary: #2c3e50; --accent: #3498db; --success: #2ecc71; --danger: #e74c3c; --warning: #f39c12; --bg: #f8fafb; --white: #ffffff; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
-        .container { background: var(--white); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 95%; max-width: 500px; text-align: center; position: relative; border: 1px solid #eee; }
+        .container { background: var(--white); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 95%; max-width: 500px; text-align: center; position: relative; border: 1px solid #eee; }
         .top-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
-        .logout-btn { cursor: pointer; color: #e74c3c; font-weight: bold; border: 1px solid #e74c3c; padding: 6px 15px; border-radius: 10px; font-size: 13px; }
-        #settingsPanel { display: none; background: #fff; padding: 25px; border-radius: 25px; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; border: 2px solid var(--primary); }
+        .logout-btn { cursor: pointer; color: var(--danger); font-weight: bold; border: 1px solid var(--danger); padding: 6px 15px; border-radius: 12px; font-size: 13px; transition: 0.3s; }
+        #settingsPanel { display: none; background: #fff; padding: 30px; border-radius: 25px; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; border: 2px solid var(--primary); }
         .dashboard-grid { display: flex; gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: #fff; padding: 15px; border-radius: 15px; border-bottom: 5px solid var(--accent); flex: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; text-align: right; font-size: 15px; }
-        button { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-main { background: var(--primary); color: white; }
-        .btn-opt { background: var(--accent); color: white; margin-bottom: 5px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 10px; border: 1px solid #f0f0f0; text-align: center; font-size: 13px; }
-        th { background: #f8f9fa; color: var(--primary); }
+        .stat-card { background: #fff; padding: 20px; border-radius: 18px; border-bottom: 5px solid var(--accent); flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 14px; text-align: right; font-size: 15px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); }
+        button { width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-main { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2); }
+        .btn-opt { background: var(--accent); color: white; margin-bottom: 8px; font-size: 15px; }
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; }
+        table { width: 100%; min-width: 550px; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 12px; border: 1px solid #f0f2f5; text-align: center; }
+        th { background: #f8f9fa; color: var(--primary); font-weight: bold; }
+        .action-btn { padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; color: white; border: none; margin: 2px; }
+        .btn-edit { background: var(--warning); }
+        .btn-del { background: var(--danger); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="top-nav">
-            <div onclick="toggleSettings()" style="cursor:pointer; font-size: 26px;">⚙️</div>
-            <div class="logout-btn" onclick="logout()">خروج</div>
+            <div onclick="toggleSettings()" style="cursor:pointer; font-size: 28px; color: #7f8c8d;">⚙️</div>
+            <div class="logout-btn" onclick="logout()">خروج آمن</div>
         </div>
 
         <div id="settingsPanel">
-            <h3 style="color:var(--primary);">نظام التدقيق والجرد</h3>
-            <button class="btn-opt" onclick="showSec('chart')">مؤشرات الأداء</button>
-            <button class="btn-opt" onclick="showSec('archive')">أرشيف العمليات</button>
-            <button class="btn-opt" onclick="showSec('monthly')">كشف العمولات والجرد</button>
-            <div id="chartSec" style="height:200px; display:none; margin-top:10px;"><canvas id="myChart"></canvas></div>
-            <div id="dataSec" style="display:none; margin-top:10px;">
-                <h4 id="secTitle"></h4>
-                <div style="width:100%; overflow-x:auto;"><table><thead id="secHead"></thead><tbody id="secBody"></tbody></table></div>
+            <h3 style="color:var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px;">مركز التحكم والتدقيق</h3>
+            <button class="btn-opt" onclick="showSec('chart')">مؤشرات النمو البيانية</button>
+            <button class="btn-opt" onclick="showSec('archive')">سجل العمليات (تعديل/حذف)</button>
+            <button class="btn-opt" onclick="showSec('monthly')">كشف الجرد والعمولات</button>
+            
+            <div id="chartSec" style="height:250px; display:none; margin-top:15px;"><canvas id="myChart"></canvas></div>
+            
+            <div id="dataSec" style="display:none; margin-top:15px;">
+                <h4 id="secTitle" style="color:var(--accent);"></h4>
+                <div id="secTotal" style="font-weight:bold; margin-bottom:10px; color: var(--success);"></div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead id="secHead"></thead>
+                        <tbody id="secBody"></tbody>
+                    </table>
+                </div>
             </div>
-            <button style="background:#95a5a6; color:white;" onclick="toggleSettings()">إغلاق</button>
+            
+            <button style="background:#ecf0f1; color:#2c3e50; margin-top:20px;" onclick="toggleSettings()">إغلاق القائمة</button>
         </div>
 
-        <h2 id="compTitle" style="color:var(--primary); font-weight: 800;">منصة N One</h2>
+        <h2 id="compTitle" style="color:var(--primary); font-weight: 800; margin-bottom: 20px;">بوابة N One الذكية</h2>
+        
         <div class="dashboard-grid">
-            <div class="stat-card"><small>إجمالي العمولات</small><div id="dayRev" style="font-weight:bold;">0.00</div></div>
-            <div class="stat-card"><small>أفضل كابتن</small><div id="topCap" style="font-weight:bold;">-</div></div>
+            <div class="stat-card"><small>عمولات اليوم</small><div id="dayRev" style="font-weight:bold; font-size: 18px; color: var(--success);">0.00</div></div>
+            <div class="stat-card"><small>نجم المندوبين</small><div id="topCap" style="font-weight:bold; font-size: 18px; color: var(--accent);">-</div></div>
         </div>
         
-        <input type="tel" id="phone" placeholder="رقم الكابتن" oninput="search()">
-        <input type="text" id="name" placeholder="اسم الكابتن">
-        <input type="text" id="loc" placeholder="موقع التحميل / المصدر">
-        <input type="number" id="del" placeholder="أجرة التوصيل المستحقة">
-        <input type="number" id="prc" placeholder="قيمة الشحنة المجمعة">
+        <div style="background: #fdfdfd; padding: 10px; border-radius: 20px; border: 1px dashed #ddd;">
+            <input type="tel" id="phone" placeholder="رقم الكابتن" oninput="search()">
+            <input type="text" id="name" placeholder="اسم الكابتن المعتمد">
+            <input type="text" id="loc" placeholder="موقع التحميل / المصدر">
+            <input type="number" id="del" placeholder="أجرة التوصيل (دينار)">
+            <input type="number" id="prc" placeholder="قيمة الشحنة (دينار)">
+        </div>
         
-        <button class="btn-main" onclick="send()">إرسال بيانات الشحنة للكابتن</button>
+        <button class="btn-main" onclick="send()">إرسال بيانات الشحنة للواتساب</button>
     </div>
 
 <script>
@@ -65,56 +82,119 @@
 
     window.onload = function() {
         if(!sessionStorage.getItem('currentActiveUser')) location.href="index.html";
-        document.getElementById('compTitle').innerText = "إدارة منشأة: " + sessionStorage.getItem('currentActiveCompanyName');
+        document.getElementById('compTitle').innerText = "إدارة: " + sessionStorage.getItem('currentActiveCompanyName');
         sync(); updateDash();
     };
 
-    async function sync() { try { const r = await fetch(API_URL); orders = await r.json(); localStorage.setItem('n1_orders', JSON.stringify(orders)); updateDash(); } catch(e){} }
+    async function sync() { 
+        try { 
+            const r = await fetch(API_URL); 
+            const d = await r.json();
+            if(d.length > 0) {
+                orders = d.filter(o => o.phone && !o.user);
+                localStorage.setItem('n1_orders', JSON.stringify(orders));
+                updateDash();
+            }
+        } catch(e){} 
+    }
 
-    function toggleSettings() { let s = document.getElementById('settingsPanel'); s.style.display = s.style.display==='block' ? 'none' : 'block'; }
+    function toggleSettings() { 
+        let s = document.getElementById('settingsPanel'); 
+        s.style.display = s.style.display==='block' ? 'none' : 'block'; 
+        if(s.style.display === 'none') updateDash();
+    }
 
     function showSec(mode) {
         document.getElementById('chartSec').style.display = mode==='chart' ? 'block' : 'none';
         document.getElementById('dataSec').style.display = mode!=='chart' ? 'block' : 'none';
-        if(mode==='chart') drawChart(); if(mode==='archive') drawArchive(); if(mode==='monthly') drawMonthly();
+        if(mode==='chart') drawChart(); 
+        if(mode==='archive') drawArchive(); 
+        if(mode==='monthly') drawMonthly();
     }
 
     function drawArchive() {
-        document.getElementById('secTitle').innerText = "سجل الطلبات الأخير";
-        document.getElementById('secHead').innerHTML = "<tr><th>التاريخ</th><th>الكابتن</th><th>الموقع</th></tr>";
+        document.getElementById('secTitle').innerText = "سجل العمليات والتحكم";
+        document.getElementById('secHead').innerHTML = "<tr><th>التاريخ</th><th>الكابتن</th><th>المصدر</th><th>إجراء</th></tr>";
         let b = document.getElementById('secBody'); b.innerHTML = "";
-        orders.slice().reverse().forEach(o => { if(o.phone && !o.user) b.innerHTML += `<tr><td>${o.date}</td><td>${o.name}</td><td>${o.location}</td></tr>`; });
+        orders.slice().reverse().forEach(o => {
+            b.innerHTML += `<tr>
+                <td>${o.date}</td>
+                <td>${o.name}</td>
+                <td>${o.location}</td>
+                <td>
+                    <button class="action-btn btn-edit" onclick="editOrder(${o.id})">تعديل</button>
+                    <button class="action-btn btn-del" onclick="deleteOrder(${o.id})">حذف</button>
+                </td>
+            </tr>`;
+        });
+    }
+
+    function editOrder(id) {
+        let o = orders.find(x => x.id == id);
+        let nD = prompt("تعديل أجرة التوصيل:", o.delivery);
+        if(nD !== null) {
+            o.delivery = nD;
+            localStorage.setItem('n1_orders', JSON.stringify(orders));
+            drawArchive();
+        }
+    }
+
+    function deleteOrder(id) {
+        if(confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟")) {
+            orders = orders.filter(x => x.id != id);
+            localStorage.setItem('n1_orders', JSON.stringify(orders));
+            drawArchive();
+        }
     }
 
     function drawMonthly() {
-        document.getElementById('secTitle').innerText = "كشف الجرد المالي";
-        document.getElementById('secHead').innerHTML = "<tr><th>الاسم</th><th>الطلبات</th><th>العمولة</th></tr>";
-        let s = {}, b = document.getElementById('secBody'); b.innerHTML = "";
-        orders.forEach(o => { if(o.phone && !o.user) { if(!s[o.phone]) s[o.phone]={n:o.name, c:0}; s[o.phone].c++; } });
-        for(let k in s) b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${(s[k].c * 0.3).toFixed(2)}</td></tr>`;
+        document.getElementById('secTitle').innerText = "كشف الجرد والعمولات";
+        document.getElementById('secHead').innerHTML = "<tr><th>الاسم</th><th>الطلبات</th><th>إجمالي العمولة</th></tr>";
+        let s = {}, t = 0, b = document.getElementById('secBody'); b.innerHTML = "";
+        orders.forEach(o => {
+            t += 0.30;
+            if(!s[o.phone]) s[o.phone] = {n:o.name, c:0};
+            s[o.phone].c++;
+        });
+        document.getElementById('secTotal').innerText = `إجمالي صافي عمولات المنصة: ${t.toFixed(2)} دينار`;
+        for(let k in s) {
+            b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${(s[k].c * 0.3).toFixed(2)} د.أ</td></tr>`;
+        }
     }
 
     function drawChart() {
         let ctx = document.getElementById('myChart').getContext('2d');
-        let labs = [...Array(7)].map((_,i)=>{let d=new Date(); d.setDate(d.getDate()-i); return d.toLocaleDateString('ar-EG');}).reverse();
-        let data = labs.map(l => orders.filter(o => o.date === l && !o.user).length);
+        let labs = [...Array(7)].map((_,i)=>{
+            let d=new Date(); d.setDate(d.getDate()-i); 
+            return d.toLocaleDateString('ar-EG');
+        }).reverse();
+        let data = labs.map(l => orders.filter(o => o.date === l).length);
         if(chartObj) chartObj.destroy();
-        chartObj = new Chart(ctx, { type:'line', data:{ labels:labs, datasets:[{label:'النشاط الساعي', data:data, borderColor:'#3498db', tension:0.4}] } });
+        chartObj = new Chart(ctx, { 
+            type:'line', 
+            data:{ labels:labs, datasets:[{label:'عدد الطلبات اليومية', data:data, borderColor:'#3498db', backgroundColor:'rgba(52,152,219,0.1)', fill:true, tension:0.4}] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
     }
 
-    function search() { let f = orders.slice().reverse().find(o => o.phone === document.getElementById('phone').value.trim()); if(f) document.getElementById('name').value = f.name; }
+    function search() { 
+        let val = document.getElementById('phone').value.trim();
+        let f = orders.slice().reverse().find(o => o.phone === val); 
+        if(f) document.getElementById('name').value = f.name; 
+    }
 
     async function send() {
         let p = document.getElementById('phone').value, l = document.getElementById('loc').value, d = document.getElementById('del').value, pr = document.getElementById('prc').value, n = document.getElementById('name').value;
-        if(!p || !l) return alert("يرجى إكمال البيانات الأساسية");
+        if(!p || !l) return alert("يرجى إدخال رقم الهاتف والمصدر");
         
         let obj = { id:Date.now(), date:new Date().toLocaleDateString('ar-EG'), name:n || "كابتن", phone:p, location:l, delivery:d, price:pr };
-        orders.push(obj); localStorage.setItem('n1_orders', JSON.stringify(orders));
+        orders.push(obj); 
+        localStorage.setItem('n1_orders', JSON.stringify(orders));
         
         try { await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:[obj]}) }); } catch(e){}
 
-        let mapLink = "https://www.google.com/maps/search/" + encodeURIComponent(l);
-        let msg = `نظام N One اللوجستي\nتحية طيبة وبعد\n\nتم تعيين طلب جديد لك كالتالي\n\nاسم المنشأة المرسلة: ${l}\nموقع التحميل: ${mapLink}\n\nالتفاصيل المالية\nأجرة التوصيل الخاصة بك: ${d} دينار\nقيمة الشحنة المطلوب تحصيلها: ${pr} دينار\n\nنتمنى لك رحلة سعيدة وعملاً موفقاً`;
+        let mapLink = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l);
+        let msg = `نظام N One اللوجستي الموحد\nتحية طيبة وبعد\n\nتم تعيين رحلة جديدة لك\n\nالمصدر: ${l}\nموقع التحميل: ${mapLink}\n\nالتفاصيل المالية:\n- أجرة المندوب: ${d} دينار\n- قيمة الشحنة المطلوب تحصيلها: ${pr} دينار\n\nنتمنى لك عملاً موفقاً ورحلة آمنة`;
         
         window.open(`https://wa.me/962${p.substring(1)}?text=${encodeURIComponent(msg)}`, '_blank');
         location.reload();
@@ -122,9 +202,9 @@
 
     function updateDash() {
         let t = new Date().toLocaleDateString('ar-EG');
-        let count = orders.filter(o => o.date === t && !o.user).length;
+        let count = orders.filter(o => o.date === t).length;
         document.getElementById('dayRev').innerText = (count * 0.3).toFixed(2) + " د.أ";
-        let c = {}; orders.forEach(o => { if(o.name && !o.user) c[o.name]=(c[o.name]||0)+1; });
+        let c = {}; orders.forEach(o => { if(o.name) c[o.name]=(c[o.name]||0)+1; });
         document.getElementById('topCap').innerText = Object.keys(c).length > 0 ? Object.keys(c).reduce((a,b)=>c[a]>c[b]?a:b) : "-";
     }
     function logout() { sessionStorage.clear(); location.href="index.html"; }

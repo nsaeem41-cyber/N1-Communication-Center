@@ -96,6 +96,9 @@
     </div>
 
 <script>
+    // رابط المزامنة الخاص بك
+    const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/xsp51h4e6tvnw';
+
     function validateLogin() {
         const u = document.getElementById('userInput').value;
         const p = document.getElementById('passInput').value;
@@ -107,6 +110,7 @@
         document.getElementById('mainPage').style.display = 'block';
         document.body.style.justifyContent = 'flex-start';
         updateDashboard();
+        syncFromCloud(); // جلب البيانات عند فتح النظام
     }
     function logout() { sessionStorage.removeItem('n1_auth'); window.location.replace(window.location.pathname); }
     if(sessionStorage.getItem('n1_auth') === 'true') { showSystem(); }
@@ -189,7 +193,7 @@
         if(found) { nmInput.value = found.name; }
     }
 
-    function processOrder() {
+    async function processOrder() {
         let ph = document.getElementById('phoneInput'), nm = document.getElementById('nameInput'), lc = document.getElementById('locationInput'), dl = document.getElementById('deliveryInput'), pr = document.getElementById('priceInput'), cm = document.getElementById('globalCommission');
         if(!ph.value || !lc.value) { alert("خطأ: يرجى استكمال كافة البيانات المطلوبة."); return; }
         
@@ -208,8 +212,18 @@
             mapLink: mapLink 
         };
         
+        // حفظ محلي كما كان سابقاً
         allOrders.push(entry); 
         localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+
+        // مزامنة سحابية (إضافة جديدة)
+        try {
+            fetch(SHEETDB_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [entry] })
+            });
+        } catch(e) { console.log("Cloud Sync Error"); }
         
         let cO = allOrders.filter(o => o.phone === entry.phone && o.date === entry.date);
         let msg = `إشعار طلب جديد - منصة N One\n--------------------------\nالمرسل إليه: ${entry.name}\nيرجى استلام الطلب التالي:\n\nالمصدر: ${entry.location}\nالموقع الجغرافي: ${entry.mapLink}\n\nبيانات التوصيل:\n- أجرة المندوب: ${entry.delivery} د.أ\n- قيمة الشحنة: ${entry.price} د.أ\n\nملخص النشاط اليومي:\n- إجمالي الطلبات: (${cO.length})\n- إجمالي المستحقات: ${cO.reduce((s,o)=>s+o.delivery,0).toFixed(2)} د.أ\n\nنرجو الالتزام بمعايير الجودة والوقت.`;
@@ -217,6 +231,18 @@
         let fP = entry.phone.startsWith('0') ? '962' + entry.phone.substring(1) : (entry.phone.startsWith('962') ? entry.phone : '962' + entry.phone);
         window.open(`https://wa.me/${fP}?text=${encodeURIComponent(msg)}`, '_blank');
         ph.value = ""; nm.value = ""; lc.value = ""; dl.value = ""; pr.value = ""; updateDashboard();
+    }
+
+    async function syncFromCloud() {
+        try {
+            const response = await fetch(SHEETDB_API_URL);
+            const data = await response.json();
+            if(data && data.length > 0) {
+                allOrders = data;
+                localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+                updateDashboard();
+            }
+        } catch(e) { console.log("Load Error"); }
     }
 
     function updateDashboard() {

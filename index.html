@@ -54,14 +54,14 @@
                 <input type="text" id="compUser" placeholder="اسم مستخدم النظام">
                 <input type="password" id="compPass" placeholder="كلمة المرور">
                 <select id="compPlan">
-                    <option value="0">تحديد مدة الاشتراك (أو ابقها 0 للتعديل)</option>
+                    <option value="0">تحديد مدة الاشتراك (ابقها 0 للتعديل)</option>
                     <option value="30">30 يوم</option>
                     <option value="90">90 يوم</option>
                     <option value="365">سنة كاملة</option>
                 </select>
             </div>
-            <button class="btn-save" id="mainActionBtn" onclick="saveCompany()">حفظ البيانات</button>
-            <button class="btn-del hidden" id="cancelEditBtn" onclick="resetForm()" style="width: 100%; margin-top: 5px;">إلغاء عملية التعديل</button>
+            <button class="btn-save" id="mainActionBtn" onclick="saveCompany()">حفظ البيانات المعتمدة</button>
+            <button class="btn-del hidden" id="cancelEditBtn" onclick="resetForm()" style="width: 100%; margin-top: 5px;">إلغاء التعديل</button>
         </div>
 
         <table>
@@ -95,8 +95,10 @@
             if (found) {
                 const now = new Date();
                 if (now > new Date(found.expiry)) {
-                    alert("عذراً، انتهت صلاحية الاشتراك.");
+                    alert("نعتذر منك، انتهت صلاحية الاشتراك.");
                 } else {
+                    // تثبيت اسم الشركة في الذاكرة لمنع تغيره
+                    sessionStorage.setItem('currentActiveCompanyName', found.name);
                     window.location.href = "company_dashboard.html";
                 }
             } else {
@@ -111,7 +113,7 @@
             const pass = document.getElementById('compPass').value;
             const days = parseInt(document.getElementById('compPlan').value);
 
-            if (!name || !user || !pass) return alert("يرجى إكمال كافة الحقول المطلوبة.");
+            if (!name || !user || !pass) return alert("يرجى إكمال كافة الحقول.");
 
             if (id) {
                 companies = companies.map(c => {
@@ -124,12 +126,12 @@
                     }
                     return c;
                 });
-                alert("تم تحديث بيانات المنشأة بنجاح.");
+                alert("تم تحديث البيانات بنجاح.");
             } else {
-                if (days === 0) return alert("يرجى تحديد مدة اشتراك صالحة.");
+                if (days === 0) return alert("يرجى تحديد مدة الاشتراك.");
                 let exp = new Date(); exp.setDate(exp.getDate() + days);
                 companies.push({ id: Date.now(), name, user, pass, expiry: exp.toISOString() });
-                alert("تم إضافة المنشأة وتفعيل الحساب.");
+                alert("تم إضافة المنشأة بنجاح.");
             }
 
             localStorage.setItem('n1_companies', JSON.stringify(companies));
@@ -143,13 +145,13 @@
             document.getElementById('compName').value = c.name;
             document.getElementById('compUser').value = c.user;
             document.getElementById('compPass').value = c.pass;
-            document.getElementById('formHeader').innerText = "تعديل بيانات: " + c.name;
-            document.getElementById('mainActionBtn').innerText = "تحديث البيانات المعتمدة";
+            document.getElementById('formHeader').innerText = "تعديل منشأة: " + c.name;
+            document.getElementById('mainActionBtn').innerText = "تحديث البيانات";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
         }
 
         function deleteComp(id) {
-            if(confirm("تأكيد حذف المنشأة بشكل نهائي؟")) {
+            if(confirm("تأكيد حذف المنشأة نهائياً؟")) {
                 companies = companies.filter(c => c.id !== id);
                 localStorage.setItem('n1_companies', JSON.stringify(companies));
                 renderTable();
@@ -162,18 +164,11 @@
             const now = new Date();
             companies.forEach(c => {
                 const isExp = now > new Date(c.expiry);
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${c.name}</td>
-                        <td>${c.user}</td>
-                        <td>${new Date(c.expiry).toLocaleDateString('en-GB')}</td>
-                        <td class="${isExp ? 'status-expired' : 'status-active'}">${isExp ? 'منتهي' : 'نشط'}</td>
-                        <td>
-                            <button class="btn-edit" onclick="editComp(${c.id})">تعديل</button>
-                            <button class="btn-del" onclick="deleteComp(${c.id})">حذف</button>
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.user}</td>
+                    <td>${new Date(c.expiry).toLocaleDateString('en-GB')}</td>
+                    <td class="${isExp ? 'status-expired' : 'status-active'}">${isExp ? 'منتهي' : 'نشط'}</td>
+                    <td><button class="btn-edit" onclick="editComp(${c.id})">تعديل</button>
+                    <button class="btn-del" onclick="deleteComp(${c.id})">حذف</button></td></tr>`;
             });
         }
 
@@ -184,7 +179,7 @@
             document.getElementById('compPass').value = "";
             document.getElementById('compPlan').value = "0";
             document.getElementById('formHeader').innerText = "إضافة منشأة جديدة";
-            document.getElementById('mainActionBtn').innerText = "حفظ البيانات";
+            document.getElementById('mainActionBtn').innerText = "حفظ البيانات المعتمدة";
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
@@ -193,7 +188,7 @@
             document.getElementById(id).classList.remove('hidden');
         }
 
-        function logout() { location.reload(); }
+        function logout() { sessionStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>

@@ -3,167 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة N One | نظام الإدارة اللوجستية المتكامل</title>
+    <title>منصة N One | لوحة البيانات</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #3498db; --success: #25d366; --danger: #e74c3c; --warning: #f39c12; --bg: #f4f7f6; --white: #ffffff; --radius: 15px; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
-        .container { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; }
-        
-        /* شريط علوي جديد للإعدادات والخروج */
+        :root { --primary: #3498db; --success: #25d366; --danger: #e74c3c; --warning: #f39c12; --bg: #f4f7f6; --white: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
+        .container { background: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; }
         .top-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; }
-        .settings-icon { cursor: pointer; font-size: 26px; color: #7f8c8d; }
-        .logout-btn { cursor: pointer; color: var(--danger); font-weight: bold; font-size: 14px; border: 1px solid var(--danger); padding: 5px 12px; border-radius: 8px; }
-
-        #settingsPanel { display: none; background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; }
-        .dashboard-grid { display: flex; gap: 12px; margin-bottom: 25px; }
-        .stat-card { flex: 1; background: #eef2f3; padding: 15px; border-radius: 12px; border-right: 5px solid var(--primary); }
-        input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; text-align: right; direction: rtl; outline: none; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-send { background-color: var(--success); color: white; }
-        .settings-btn { background-color: var(--primary); color: white; margin-bottom: 8px; width: 100%; }
-        .chart-container { width: 100%; height: 200px; margin-top: 20px; }
-        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; }
-        .all-orders-table { width: 100%; min-width: 600px; border-collapse: collapse; font-size: 12px; }
-        .all-orders-table th, .all-orders-table td { padding: 8px; border: 1px solid #eee; text-align: center; }
-        .all-orders-table th { background-color: var(--primary); color: white; }
-        .edit-btn { background-color: var(--warning); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; }
-        .delete-btn { background-color: var(--danger); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; margin-right: 5px; }
+        .logout-btn { cursor: pointer; color: var(--danger); font-weight: bold; border: 1px solid var(--danger); padding: 5px 12px; border-radius: 8px; font-size: 13px; }
+        #settingsPanel { display: none; background: var(--white); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; }
+        .stat-card { background: #eef2f3; padding: 15px; border-radius: 12px; border-right: 5px solid var(--primary); flex: 1; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; text-align: right; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-send { background: var(--success); color: white; }
+        .btn-opt { background: var(--primary); color: white; margin-bottom: 5px; }
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: 12px; }
+        th, td { border: 1px solid #eee; padding: 8px; text-align: center; }
+        th { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
-    <div id="mainPage" class="container">
+    <div class="container">
         <div class="top-nav">
-            <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
-            <div class="logout-btn" onclick="handleLogout()">تسجيل خروج</div>
+            <div onclick="toggleSettings()" style="cursor:pointer; font-size: 24px;">⚙️</div>
+            <div class="logout-btn" onclick="logout()">خروج</div>
         </div>
 
         <div id="settingsPanel">
-            <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">إعدادات النظام المركزية</h3>
-            <label>نسبة العمولة الافتراضية:</label>
-            <input type="number" id="globalCommission" step="0.01" value="0.30">
-            <button class="settings-btn" onclick="showSection('chart')">عرض مؤشرات الأداء البيانية</button>
-            <button class="settings-btn" onclick="showSection('archive')">سجل العمليات اليومي</button>
-            <button class="settings-btn" onclick="showSection('monthly')">التقارير المالية والجرد</button>
-            <div id="chartSec" class="chart-container" style="display:none;"><canvas id="revenueChart"></canvas></div>
+            <h3>إعدادات وتدقيق النظام</h3>
+            <button class="btn-opt" onclick="showSec('chart')">مؤشرات الأداء</button>
+            <button class="btn-opt" onclick="showSec('archive')">سجل العمليات</button>
+            <button class="btn-opt" onclick="showSec('monthly')">الجرد والعمولات</button>
+            <div id="chartSec" style="height:200px; display:none;"><canvas id="myChart"></canvas></div>
             <div id="dataSec" style="display:none;">
                 <h4 id="secTitle"></h4>
-                <div id="secTotal" style="font-weight:bold; color:#2980b9; margin-bottom:10px;"></div>
-                <div class="table-wrapper">
-                    <table class="all-orders-table"><thead id="secHead"></thead><tbody id="secBody"></tbody></table>
-                </div>
+                <div class="table-wrapper"><table><thead id="secHead"></thead><tbody id="secBody"></tbody></table></div>
             </div>
-            <button style="background-color: var(--danger); color:white;" onclick="toggleSettings()">حفظ وإغلاق النظام</button>
+            <button style="background:var(--danger); color:white;" onclick="toggleSettings()">إغلاق</button>
         </div>
 
-        <h2 id="headerTitle" style="color: var(--primary); margin-bottom: 20px;">لوحة بيانات N One</h2>
-        <div class="dashboard-grid">
-            <div class="stat-card"><small>صافي أرباح اليوم</small><div id="dailyProfit" style="font-weight: bold;">0.00 د.أ</div></div>
-            <div class="stat-card"><small>أعلى أداء شهري</small><div id="topCaptain" style="font-weight: bold;">-</div></div>
+        <h2 id="compTitle" style="color:var(--primary);">لوحة N One</h2>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <div class="stat-card"><small>طلبات اليوم</small><div id="dayCount" style="font-weight:bold;">0</div></div>
+            <div class="stat-card"><small>أفضل مندوب</small><div id="topCap" style="font-weight:bold;">-</div></div>
         </div>
-        <input type="tel" id="phoneInput" placeholder="رقم هاتف المندوب" oninput="searchCaptainInfo()">
-        <input type="text" id="nameInput" placeholder="اسم المندوب">
-        <input type="text" id="locationInput" placeholder="موقع التحميل (اسم المنشأة)">
-        <input type="number" id="deliveryInput" placeholder="أجرة التوصيل">
-        <input type="number" id="priceInput" placeholder="قيمة الشحنة">
-        <button class="btn-send" onclick="processOrder()">إرسال بيانات الطلب</button>
+        <input type="tel" id="phone" placeholder="رقم المندوب" oninput="search()">
+        <input type="text" id="name" placeholder="اسم المندوب">
+        <input type="text" id="loc" placeholder="المصدر">
+        <input type="number" id="del" placeholder="أجرة التوصيل">
+        <input type="number" id="prc" placeholder="قيمة الشحنة">
+        <button class="btn-send" onclick="send()">إرسال الطلب عبر واتساب</button>
     </div>
 
 <script>
-    // حماية وطرد وتثبيت اسم (إضافات خالتو ميمي)
+    const SHEET_URL = 'https://sheetdb.io/api/v1/xsp51h4e6tvnw'
+    let orders = JSON.parse(localStorage.getItem('n1_orders')) || []
+    let chartObj
+
     window.onload = function() {
-        const u = sessionStorage.getItem('currentActiveUser');
-        const n = sessionStorage.getItem('currentActiveCompanyName');
-        const comps = JSON.parse(localStorage.getItem('n1_companies')) || [];
-        const info = comps.find(c => c.user === u);
-        const now = new Date();
+        if(!sessionStorage.getItem('currentActiveUser')) location.href="index.html"
+        document.getElementById('compTitle').innerText = "منشأة: " + sessionStorage.getItem('currentActiveCompanyName')
+        sync(); updateDash();
+    }
 
-        if(!u || !info || (now > new Date(info.expiry))) {
-            sessionStorage.clear(); window.location.replace("index.html");
-        } else {
-            document.getElementById('headerTitle').innerText = "منشأة: " + n;
-            updateDashboard();
-        }
-    };
+    async function sync() { try { const r = await fetch(SHEET_URL); orders = await r.json(); localStorage.setItem('n1_orders', JSON.stringify(orders)); updateDash(); } catch(e){} }
 
-    function handleLogout() { if(confirm("تسجيل الخروج؟")) { sessionStorage.clear(); window.location.replace("index.html"); } }
+    function toggleSettings() { let s = document.getElementById('settingsPanel'); s.style.display = s.style.display==='block' ? 'none' : 'block' }
 
-    let allOrders = JSON.parse(localStorage.getItem('n1_orders')) || [];
-    let myChart;
+    function showSec(mode) {
+        document.getElementById('chartSec').style.display = mode==='chart' ? 'block' : 'none'
+        document.getElementById('dataSec').style.display = mode!=='chart' ? 'block' : 'none'
+        if(mode==='chart') drawChart(); if(mode==='archive') drawArchive(); if(mode==='monthly') drawMonthly();
+    }
 
-    function toggleSettings() {
-        let p = document.getElementById('settingsPanel');
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
-        if(p.style.display === 'none') updateDashboard();
+    function drawArchive() {
+        document.getElementById('secTitle').innerText = "أرشيف العمليات"
+        document.getElementById('secHead').innerHTML = "<tr><th>التاريخ</th><th>المندوب</th><th>الموقع</th></tr>"
+        let b = document.getElementById('secBody'); b.innerHTML = ""
+        orders.slice(-20).reverse().forEach(o => { if(o.phone) b.innerHTML += `<tr><td>${o.date}</td><td>${o.name}</td><td>${o.location}</td></tr>` })
     }
-    function showSection(type) {
-        document.getElementById('chartSec').style.display = type === 'chart' ? 'block' : 'none';
-        document.getElementById('dataSec').style.display = type !== 'chart' ? 'block' : 'none';
-        if(type === 'chart') renderChart(); if(type === 'archive') updateArchive(); if(type === 'monthly') updateMonthly();
+
+    function drawMonthly() {
+        document.getElementById('secTitle').innerText = "الجرد المالي"
+        document.getElementById('secHead').innerHTML = "<tr><th>الاسم</th><th>الطلبات</th><th>العمولة</th></tr>"
+        let s = {}, b = document.getElementById('secBody'); b.innerHTML = ""
+        orders.forEach(o => { if(!s[o.phone]) s[o.phone]={n:o.name, c:0}; s[o.phone].c++ })
+        for(let k in s) b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${(s[k].c * 0.3).toFixed(2)}</td></tr>`
     }
-    function updateArchive() {
-        document.getElementById('secTitle').innerText = "سجل العمليات المعتمد";
-        document.getElementById('secHead').innerHTML = "<tr><th>التوقيت</th><th>الاسم</th><th>الموقع</th><th>إجراءات</th></tr>";
-        let b = document.getElementById('secBody'); b.innerHTML = "";
-        allOrders.slice().reverse().forEach(o => {
-            b.innerHTML += `<tr><td>${o.time}</td><td>${o.name}</td><td>${o.location}</td><td><span class="edit-btn" onclick="editOrder(${o.id})">تعديل</span> <span class="delete-btn" onclick="deleteOrder(${o.id})">حذف</span></td></tr>`;
-        });
+
+    function drawChart() {
+        let ctx = document.getElementById('myChart').getContext('2d')
+        let labs = [...Array(7)].map((_,i)=>{let d=new Date(); d.setDate(d.getDate()-i); return d.toLocaleDateString('ar-EG')}).reverse()
+        let data = labs.map(l => orders.filter(o => o.date === l).length)
+        if(chartObj) chartObj.destroy()
+        chartObj = new Chart(ctx, { type:'line', data:{ labels:labs, datasets:[{label:'الطلبات', data:data, borderColor:'#3498db'}] } })
     }
-    function editOrder(id) {
-        let o = allOrders.find(x => x.id === id);
-        let nD = prompt("تعديل قيمة التوصيل المعتمدة:", o.delivery);
-        if(nD !== null) o.delivery = parseFloat(nD) || 0;
-        localStorage.setItem('n1_orders', JSON.stringify(allOrders)); updateArchive();
+
+    function search() { let f = orders.slice().reverse().find(o => o.phone === document.getElementById('phone').value.trim()); if(f) document.getElementById('name').value = f.name }
+
+    async function send() {
+        let p = document.getElementById('phone').value, l = document.getElementById('loc').value, d = document.getElementById('del').value, pr = document.getElementById('prc').value, n = document.getElementById('name').value
+        if(!p || !l) return alert("أكمل الحقول")
+        let obj = { id:Date.now(), date:new Date().toLocaleDateString('ar-EG'), name:n, phone:p, location:l, delivery:d, price:pr }
+        orders.push(obj); localStorage.setItem('n1_orders', JSON.stringify(orders))
+        try { await fetch(SHEET_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:[obj]}) }) } catch(e){}
+        window.open(`https://wa.me/962${p.substring(1)}?text=${encodeURIComponent("طلب جديد من " + l + " الأجرة " + d)}`, '_blank')
+        location.reload()
     }
-    function deleteOrder(id) {
-        if(confirm("حذف السجل نهائياً؟")) {
-            allOrders = allOrders.filter(x => x.id !== id);
-            localStorage.setItem('n1_orders', JSON.stringify(allOrders)); updateArchive();
-        }
+
+    function updateDash() {
+        let t = new Date().toLocaleDateString('ar-EG')
+        document.getElementById('dayCount').innerText = orders.filter(o => o.date === t).length
+        let c = {}; orders.forEach(o => { if(o.name) c[o.name]=(c[o.name]||0)+1 })
+        document.getElementById('topCap').innerText = Object.keys(c).reduce((a,b)=>c[a]>c[b]?a:b, "-")
     }
-    function updateMonthly() {
-        document.getElementById('secTitle').innerText = "التقرير المالي التفصيلي";
-        document.getElementById('secHead').innerHTML = "<tr><th>المندوب</th><th>عدد الطلبات</th><th>إجمالي عمولة N One</th></tr>";
-        let b = document.getElementById('secBody'); b.innerHTML = "";
-        let s = {}, t = 0, now = new Date().getTime(), week = 7 * 24 * 60 * 60 * 1000;
-        allOrders.forEach(o => {
-            let p = (now - o.timestamp > week) ? (o.lockedCommission || 0.3) : parseFloat(document.getElementById('globalCommission').value);
-            t += p; if(!s[o.phone]) s[o.phone] = {n: o.name, c: 0, p: 0};
-            s[o.phone].c++; s[o.phone].p += p;
-        });
-        document.getElementById('secTotal').innerText = `إجمالي إيرادات النظام: ${t.toFixed(2)} د.أ`;
-        for(let k in s) b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${s[k].p.toFixed(2)}</td></tr>`;
-    }
-    function renderChart() {
-        let ctx = document.getElementById('revenueChart').getContext('2d');
-        let lbs = [...Array(7)].map((_, i) => { let d = new Date(); d.setDate(d.getDate() - i); return d.toLocaleDateString('ar-EG'); }).reverse();
-        let dt = lbs.map(l => allOrders.filter(o => o.date === l).reduce((sm, o) => sm + (o.lockedCommission || 0.3), 0));
-        if(myChart) myChart.destroy();
-        myChart = new Chart(ctx, { type: 'line', data: { labels: lbs, datasets: [{ label: 'مؤشر النمو المالي', data: dt, borderColor: '#3498db', fill: true, backgroundColor: 'rgba(52, 152, 219, 0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
-    }
-    function searchCaptainInfo() {
-        let ph = document.getElementById('phoneInput'), nm = document.getElementById('nameInput');
-        let found = allOrders.slice().reverse().find(o => o.phone === ph.value.trim());
-        if(found) nm.value = found.name;
-    }
-    function processOrder() {
-        let ph = document.getElementById('phoneInput'), nm = document.getElementById('nameInput'), lc = document.getElementById('locationInput'), dl = document.getElementById('deliveryInput'), pr = document.getElementById('priceInput'), cm = document.getElementById('globalCommission');
-        if(!ph.value || !lc.value) { alert("يرجى استكمال البيانات."); return; }
-        let entry = { id: Date.now(), timestamp: new Date().getTime(), date: new Date().toLocaleDateString('ar-EG'), time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), name: nm.value || "مندوب معتمد", phone: ph.value, location: lc.value, delivery: parseFloat(dl.value) || 0, price: parseFloat(pr.value) || 0, lockedCommission: parseFloat(cm.value) || 0.30, mapLink: "https://maps.google.com/?q=" + encodeURIComponent(lc.value) };
-        allOrders.push(entry); localStorage.setItem('n1_orders', JSON.stringify(allOrders));
-        let cO = allOrders.filter(o => o.phone === entry.phone);
-        let msg = `إشعار طلب جديد - منصة N One\n--------------------------\nالمرسل إليه: ${entry.name}\nالمصدر: ${entry.location}\nالموقع: ${entry.mapLink}\n\nبيانات التوصيل:\n- أجرة المندوب: ${entry.delivery} د.أ\n- قيمة الشحنة: ${entry.price} د.أ\n\nإجمالي طلباتك اليوم: (${cO.length})`;
-        let fP = entry.phone.startsWith('0') ? '962' + entry.phone.substring(1) : (entry.phone.startsWith('962') ? entry.phone : '962' + entry.phone);
-        window.open(`https://wa.me/${fP}?text=${encodeURIComponent(msg)}`, '_blank');
-        ph.value = ""; nm.value = ""; lc.value = ""; dl.value = ""; pr.value = ""; updateDashboard();
-    }
-    function updateDashboard() {
-        let t = new Date().toLocaleDateString('ar-EG');
-        let d = allOrders.filter(o => o.date === t).reduce((s,o)=>s+(o.lockedCommission||0.3),0);
-        document.getElementById('dailyProfit').innerText = d.toFixed(2) + " د.أ";
-        let c = {}; allOrders.forEach(o => { if(o.name) c[o.name] = (c[o.name] || 0) + 1; });
-        document.getElementById('topCaptain').innerText = Object.keys(c).reduce((a, b) => c[a] > c[b] ? a : b, "-");
-    }
+    function logout() { sessionStorage.clear(); location.href="index.html" }
 </script>
 </body>
 </html>

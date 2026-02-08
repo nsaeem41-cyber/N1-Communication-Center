@@ -3,211 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N One Logistics | النظام المتكامل 2026</title>
+    <title>منصة N One | نظام الإدارة اللوجستية المتكامل</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #2ecc71; --danger: #e74c3c; --warning: #f39c12; --bg: #f8fafb; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 15px; margin: 0; }
-        .container { background: var(--white); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 95%; max-width: 500px; text-align: center; position: relative; border: 1px solid #eee; }
-        .top-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
-        .logout-btn { cursor: pointer; color: var(--danger); font-weight: bold; border: 1px solid var(--danger); padding: 6px 15px; border-radius: 12px; font-size: 13px; transition: 0.3s; }
-        #settingsPanel { display: none; background: #fff; padding: 30px; border-radius: 25px; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; border: 2px solid var(--primary); }
-        .dashboard-grid { display: flex; gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: #fff; padding: 20px; border-radius: 18px; border-bottom: 5px solid var(--accent); flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 14px; text-align: right; font-size: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); }
-        button { width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        .btn-main { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(44, 62, 80, 0.2); }
-        .btn-opt { background: var(--accent); color: white; margin-bottom: 8px; font-size: 15px; }
-        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 12px; }
-        table { width: 100%; min-width: 550px; border-collapse: collapse; font-size: 13px; }
-        th, td { padding: 12px; border: 1px solid #f0f2f5; text-align: center; }
-        th { background: #f8f9fa; color: var(--primary); font-weight: bold; }
-        .action-btn { padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; color: white; border: none; margin: 2px; }
-        .btn-edit { background: var(--warning); }
-        .btn-del { background: var(--danger); }
+        :root {
+            --primary: #3498db;
+            --success: #25d366;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --radius: 15px;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
+        .container { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 500px; text-align: center; position: relative; }
+        .settings-icon { position: absolute; top: 20px; left: 20px; cursor: pointer; font-size: 26px; z-index: 1000; color: #7f8c8d; }
+        #settingsPanel { display: none; background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; text-align: right; overflow-y: auto; }
+        .dashboard-grid { display: flex; gap: 12px; margin-bottom: 25px; }
+        .stat-card { flex: 1; background: #eef2f3; padding: 15px; border-radius: 12px; border-right: 5px solid var(--primary); }
+        input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; text-align: right; direction: rtl; outline: none; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 17px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-send { background-color: var(--success); color: white; }
+        .settings-btn { background-color: var(--primary); color: white; margin-bottom: 8px; width: 100%; }
+        .chart-container { width: 100%; height: 200px; margin-top: 20px; }
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .all-orders-table { width: 100%; min-width: 600px; border-collapse: collapse; font-size: 12px; }
+        .all-orders-table th, .all-orders-table td { padding: 8px; border: 1px solid #eee; text-align: center; }
+        .all-orders-table th { background-color: var(--primary); color: white; }
+        .edit-btn { background-color: var(--warning); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; }
+        .delete-btn { background-color: var(--danger); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; margin-right: 5px; }
+        .logout-btn { background-color: var(--danger); color: white; padding: 8px; width: auto; font-size: 12px; margin-bottom: 15px; border-radius: 8px; float: left; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-nav">
-            <div onclick="toggleSettings()" style="cursor:pointer; font-size: 28px; color: #7f8c8d;">⚙️</div>
-            <div class="logout-btn" onclick="logout()">خروج آمن</div>
-        </div>
+
+    <div id="mainPage" class="container">
+        <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
 
         <div id="settingsPanel">
-            <h3 style="color:var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px;">مركز التحكم والتدقيق</h3>
-            <button class="btn-opt" onclick="showSec('chart')">مؤشرات النمو البيانية</button>
-            <button class="btn-opt" onclick="showSec('archive')">سجل العمليات (تعديل/حذف)</button>
-            <button class="btn-opt" onclick="showSec('monthly')">كشف الجرد والعمولات</button>
+            <button class="logout-btn" onclick="sessionStorage.clear(); location.href='index.html'">تسجيل خروج</button>
+            <div style="clear:both;"></div>
+            <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">إعدادات النظام المركزية</h3>
+            <label>نسبة العمولة الافتراضية:</label>
+            <input type="number" id="globalCommission" step="0.01" value="0.30">
             
-            <div id="chartSec" style="height:250px; display:none; margin-top:15px;"><canvas id="myChart"></canvas></div>
+            <button class="settings-btn" onclick="showSection('chart')">عرض مؤشرات الأداء البيانية</button>
+            <button class="settings-btn" onclick="showSection('archive')">سجل العمليات اليومي</button>
+            <button class="settings-btn" onclick="showSection('monthly')">التقارير المالية والجرد</button>
+
+            <div id="chartSec" class="chart-container" style="display:none;"><canvas id="revenueChart"></canvas></div>
             
-            <div id="dataSec" style="display:none; margin-top:15px;">
-                <h4 id="secTitle" style="color:var(--accent);"></h4>
-                <div id="secTotal" style="font-weight:bold; margin-bottom:10px; color: var(--success);"></div>
+            <div id="dataSec" style="display:none;">
+                <h4 id="secTitle"></h4>
+                <div id="secTotal" style="font-weight:bold; color:#2980b9; margin-bottom:10px;"></div>
                 <div class="table-wrapper">
-                    <table>
+                    <table class="all-orders-table">
                         <thead id="secHead"></thead>
                         <tbody id="secBody"></tbody>
                     </table>
                 </div>
             </div>
-            
-            <button style="background:#ecf0f1; color:#2c3e50; margin-top:20px;" onclick="toggleSettings()">إغلاق القائمة</button>
+
+            <button style="background-color: var(--danger); color:white;" onclick="toggleSettings()">حفظ وإغلاق النظام</button>
         </div>
 
-        <h2 id="compTitle" style="color:var(--primary); font-weight: 800; margin-bottom: 20px;">بوابة N One الذكية</h2>
-        
+        <h2 id="displayCompName" style="color: var(--primary); margin-bottom: 20px;">لوحة بيانات N One</h2>
         <div class="dashboard-grid">
-            <div class="stat-card"><small>عمولات اليوم</small><div id="dayRev" style="font-weight:bold; font-size: 18px; color: var(--success);">0.00</div></div>
-            <div class="stat-card"><small>نجم المندوبين</small><div id="topCap" style="font-weight:bold; font-size: 18px; color: var(--accent);">-</div></div>
+            <div class="stat-card"><small>صافي أرباح اليوم</small><div id="dailyProfit" style="font-weight: bold;">0.00 د.أ</div></div>
+            <div class="stat-card"><small>أعلى أداء شهري</small><div id="topCaptain" style="font-weight: bold;">-</div></div>
         </div>
         
-        <div style="background: #fdfdfd; padding: 10px; border-radius: 20px; border: 1px dashed #ddd;">
-            <input type="tel" id="phone" placeholder="رقم الكابتن" oninput="search()">
-            <input type="text" id="name" placeholder="اسم الكابتن المعتمد">
-            <input type="text" id="loc" placeholder="موقع التحميل / المصدر">
-            <input type="number" id="del" placeholder="أجرة التوصيل (دينار)">
-            <input type="number" id="prc" placeholder="قيمة الشحنة (دينار)">
-        </div>
+        <input type="tel" id="phoneInput" placeholder="رقم هاتف المندوب" oninput="searchCaptainInfo()">
+        <input type="text" id="nameInput" placeholder="اسم المندوب">
+        <input type="text" id="locationInput" placeholder="موقع التحميل (اسم المنشأة)">
+        <input type="number" id="deliveryInput" placeholder="أجرة التوصيل">
+        <input type="number" id="priceInput" placeholder="قيمة الشحنة">
         
-        <button class="btn-main" onclick="send()">إرسال بيانات الشحنة للواتساب</button>
+        <button class="btn-send" onclick="processOrder()">إرسال بيانات الطلب</button>
     </div>
 
 <script>
     const API_URL = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
-    let orders = JSON.parse(localStorage.getItem('n1_orders')) || [];
-    let chartObj;
+    let allOrders = JSON.parse(localStorage.getItem('n1_orders')) || [];
+    let myChart;
 
+    // تفعيل الحماية والمزامنة السحابية عند الفتح
     window.onload = function() {
-        if(!sessionStorage.getItem('currentActiveUser')) location.href="index.html";
-        document.getElementById('compTitle').innerText = "إدارة: " + sessionStorage.getItem('currentActiveCompanyName');
-        sync(); updateDash();
+        const user = sessionStorage.getItem('currentActiveUser');
+        const name = sessionStorage.getItem('currentActiveCompanyName');
+        if(!user) {
+            location.href = "index.html";
+        } else {
+            document.getElementById('displayCompName').innerText = "منشأة: " + name;
+            syncCloud();
+            updateDashboard();
+        }
     };
 
-    async function sync() { 
-        try { 
-            const r = await fetch(API_URL); 
-            const d = await r.json();
-            if(d.length > 0) {
-                orders = d.filter(o => o.phone && !o.user);
-                localStorage.setItem('n1_orders', JSON.stringify(orders));
-                updateDash();
+    async function syncCloud() {
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            if(data.length > 0) {
+                // فلترة البيانات لضمان عدم سحب بيانات مدراء النظام كطلبات
+                allOrders = data.filter(o => o.phone && !o.user);
+                localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+                updateDashboard();
             }
-        } catch(e){} 
+        } catch(e) {}
     }
 
-    function toggleSettings() { 
-        let s = document.getElementById('settingsPanel'); 
-        s.style.display = s.style.display==='block' ? 'none' : 'block'; 
-        if(s.style.display === 'none') updateDash();
+    function toggleSettings() {
+        let p = document.getElementById('settingsPanel');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+        if(p.style.display === 'none') updateDashboard();
     }
 
-    function showSec(mode) {
-        document.getElementById('chartSec').style.display = mode==='chart' ? 'block' : 'none';
-        document.getElementById('dataSec').style.display = mode!=='chart' ? 'block' : 'none';
-        if(mode==='chart') drawChart(); 
-        if(mode==='archive') drawArchive(); 
-        if(mode==='monthly') drawMonthly();
+    function showSection(type) {
+        document.getElementById('chartSec').style.display = type === 'chart' ? 'block' : 'none';
+        document.getElementById('dataSec').style.display = type !== 'chart' ? 'block' : 'none';
+        if(type === 'chart') renderChart();
+        if(type === 'archive') updateArchive();
+        if(type === 'monthly') updateMonthly();
     }
 
-    function drawArchive() {
-        document.getElementById('secTitle').innerText = "سجل العمليات والتحكم";
-        document.getElementById('secHead').innerHTML = "<tr><th>التاريخ</th><th>الكابتن</th><th>المصدر</th><th>إجراء</th></tr>";
+    function updateArchive() {
+        document.getElementById('secTitle').innerText = "سجل العمليات المعتمد";
+        document.getElementById('secHead').innerHTML = "<tr><th>التوقيت</th><th>الاسم</th><th>الموقع</th><th>إجراءات</th></tr>";
         let b = document.getElementById('secBody'); b.innerHTML = "";
-        orders.slice().reverse().forEach(o => {
-            b.innerHTML += `<tr>
-                <td>${o.date}</td>
-                <td>${o.name}</td>
-                <td>${o.location}</td>
-                <td>
-                    <button class="action-btn btn-edit" onclick="editOrder(${o.id})">تعديل</button>
-                    <button class="action-btn btn-del" onclick="deleteOrder(${o.id})">حذف</button>
-                </td>
-            </tr>`;
+        allOrders.slice().reverse().forEach(o => {
+            b.innerHTML += `<tr><td>${o.time}</td><td>${o.name}</td><td>${o.location}</td><td>
+                <span class="edit-btn" onclick="editOrder(${o.id})">تعديل</span>
+                <span class="delete-btn" onclick="deleteOrder(${o.id})">حذف</span>
+            </td></tr>`;
         });
     }
 
     function editOrder(id) {
-        let o = orders.find(x => x.id == id);
-        let nD = prompt("تعديل أجرة التوصيل:", o.delivery);
-        if(nD !== null) {
-            o.delivery = nD;
-            localStorage.setItem('n1_orders', JSON.stringify(orders));
-            drawArchive();
-        }
+        let o = allOrders.find(x => x.id === id);
+        let nD = prompt("تعديل قيمة التوصيل المعتمدة:", o.delivery);
+        if(nD !== null) o.delivery = parseFloat(nD) || 0;
+        localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+        updateArchive();
     }
 
     function deleteOrder(id) {
-        if(confirm("هل أنت متأكد من حذف هذا الطلب نهائياً؟")) {
-            orders = orders.filter(x => x.id != id);
-            localStorage.setItem('n1_orders', JSON.stringify(orders));
-            drawArchive();
+        if(confirm("هل أنت متأكد من حذف السجل بشكل نهائي؟")) {
+            allOrders = allOrders.filter(x => x.id !== id);
+            localStorage.setItem('n1_orders', JSON.stringify(allOrders));
+            updateArchive();
         }
     }
 
-    function drawMonthly() {
-        document.getElementById('secTitle').innerText = "كشف الجرد والعمولات";
-        document.getElementById('secHead').innerHTML = "<tr><th>الاسم</th><th>الطلبات</th><th>إجمالي العمولة</th></tr>";
-        let s = {}, t = 0, b = document.getElementById('secBody'); b.innerHTML = "";
-        orders.forEach(o => {
-            t += 0.30;
-            if(!s[o.phone]) s[o.phone] = {n:o.name, c:0};
-            s[o.phone].c++;
+    function updateMonthly() {
+        document.getElementById('secTitle').innerText = "التقرير المالي التفصيلي";
+        document.getElementById('secHead').innerHTML = "<tr><th>المندوب</th><th>عدد الطلبات</th><th>إجمالي عمولة N One</th></tr>";
+        let b = document.getElementById('secBody'); b.innerHTML = "";
+        let s = {}, t = 0, now = new Date().getTime(), week = 7 * 24 * 60 * 60 * 1000;
+        allOrders.forEach(o => {
+            let p = (now - o.timestamp > week) ? (parseFloat(o.lockedCommission) || 0.3) : parseFloat(document.getElementById('globalCommission').value);
+            t += p;
+            if(!s[o.phone]) s[o.phone] = {n: o.name, c: 0, p: 0};
+            s[o.phone].c++; s[o.phone].p += p;
         });
-        document.getElementById('secTotal').innerText = `إجمالي صافي عمولات المنصة: ${t.toFixed(2)} دينار`;
-        for(let k in s) {
-            b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${(s[k].c * 0.3).toFixed(2)} د.أ</td></tr>`;
-        }
+        document.getElementById('secTotal').innerText = `إجمالي إيرادات النظام: ${t.toFixed(2)} د.أ`;
+        for(let k in s) b.innerHTML += `<tr><td>${s[k].n}</td><td>${s[k].c}</td><td>${s[k].p.toFixed(2)}</td></tr>`;
     }
 
-    function drawChart() {
-        let ctx = document.getElementById('myChart').getContext('2d');
-        let labs = [...Array(7)].map((_,i)=>{
-            let d=new Date(); d.setDate(d.getDate()-i); 
-            return d.toLocaleDateString('ar-EG');
-        }).reverse();
-        let data = labs.map(l => orders.filter(o => o.date === l).length);
-        if(chartObj) chartObj.destroy();
-        chartObj = new Chart(ctx, { 
-            type:'line', 
-            data:{ labels:labs, datasets:[{label:'عدد الطلبات اليومية', data:data, borderColor:'#3498db', backgroundColor:'rgba(52,152,219,0.1)', fill:true, tension:0.4}] },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
+    function renderChart() {
+        let ctx = document.getElementById('revenueChart').getContext('2d');
+        let lbs = [...Array(7)].map((_, i) => { let d = new Date(); d.setDate(d.getDate() - i); return d.toLocaleDateString('ar-EG'); }).reverse();
+        let dt = lbs.map(l => allOrders.filter(o => o.date === l).reduce((sm, o) => sm + (parseFloat(o.lockedCommission) || 0.3), 0));
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, { type: 'line', data: { labels: lbs, datasets: [{ label: 'مؤشر النمو المالي', data: dt, borderColor: '#3498db', fill: true, backgroundColor: 'rgba(52, 152, 219, 0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
     }
 
-    function search() { 
-        let val = document.getElementById('phone').value.trim();
-        let f = orders.slice().reverse().find(o => o.phone === val); 
-        if(f) document.getElementById('name').value = f.name; 
+    function searchCaptainInfo() {
+        let phInput = document.getElementById('phoneInput');
+        let nmInput = document.getElementById('nameInput');
+        let val = phInput.value.trim();
+        let found = allOrders.slice().reverse().find(o => o.phone === val);
+        if(found) { nmInput.value = found.name; }
     }
 
-    async function send() {
-        let p = document.getElementById('phone').value, l = document.getElementById('loc').value, d = document.getElementById('del').value, pr = document.getElementById('prc').value, n = document.getElementById('name').value;
-        if(!p || !l) return alert("يرجى إدخال رقم الهاتف والمصدر");
+    async function processOrder() {
+        let ph = document.getElementById('phoneInput'), nm = document.getElementById('nameInput'), lc = document.getElementById('locationInput'), dl = document.getElementById('deliveryInput'), pr = document.getElementById('priceInput'), cm = document.getElementById('globalCommission');
+        if(!ph.value || !lc.value) { alert("خطأ: يرجى استكمال كافة البيانات المطلوبة."); return; }
         
-        let obj = { id:Date.now(), date:new Date().toLocaleDateString('ar-EG'), name:n || "كابتن", phone:p, location:l, delivery:d, price:pr };
-        orders.push(obj); 
-        localStorage.setItem('n1_orders', JSON.stringify(orders));
+        let mapLink = "https://www.google.com/maps/search/" + encodeURIComponent(lc.value);
+        let entry = { id: Date.now(), timestamp: new Date().getTime(), date: new Date().toLocaleDateString('ar-EG'), time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }), name: nm.value || "مندوب معتمد", phone: ph.value, location: lc.value, delivery: parseFloat(dl.value) || 0, price: parseFloat(pr.value) || 0, lockedCommission: parseFloat(cm.value) || 0.30, mapLink: mapLink };
         
-        try { await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:[obj]}) }); } catch(e){}
+        allOrders.push(entry); 
+        localStorage.setItem('n1_orders', JSON.stringify(allOrders));
 
-        let mapLink = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(l);
-        let msg = `نظام N One اللوجستي الموحد\nتحية طيبة وبعد\n\nتم تعيين رحلة جديدة لك\n\nالمصدر: ${l}\nموقع التحميل: ${mapLink}\n\nالتفاصيل المالية:\n- أجرة المندوب: ${d} دينار\n- قيمة الشحنة المطلوب تحصيلها: ${pr} دينار\n\nنتمنى لك عملاً موفقاً ورحلة آمنة`;
+        // إرسال للسحابة
+        try {
+            await fetch(API_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({data: [entry]})
+            });
+        } catch(e) {}
+
+        let cO = allOrders.filter(o => o.phone === entry.phone);
+        let msg = `إشعار طلب جديد - منصة N One\n--------------------------\nالمرسل إليه: ${entry.name}\nيرجى استلام الطلب التالي:\n\nالمصدر: ${entry.location}\nالموقع الجغرافي: ${entry.mapLink}\n\nبيانات التوصيل:\n- أجرة المندوب: ${entry.delivery} د.أ\n- قيمة الشحنة: ${entry.price} د.أ\n\nملخص النشاط اليومي:\n- إجمالي الطلبات: (${cO.length})\n- إجمالي المستحقات: ${cO.reduce((s,o)=>s+o.delivery,0)} د.أ\n\nنرجو الالتزام بمعايير الجودة والوقت.`;
         
-        window.open(`https://wa.me/962${p.substring(1)}?text=${encodeURIComponent(msg)}`, '_blank');
-        location.reload();
+        let fP = entry.phone.startsWith('0') ? '962' + entry.phone.substring(1) : (entry.phone.startsWith('962') ? entry.phone : '962' + entry.phone);
+        window.open(`https://wa.me/${fP}?text=${encodeURIComponent(msg)}`, '_blank');
+        ph.value = ""; nm.value = ""; lc.value = ""; dl.value = ""; pr.value = ""; updateDashboard();
     }
 
-    function updateDash() {
+    function updateDashboard() {
         let t = new Date().toLocaleDateString('ar-EG');
-        let count = orders.filter(o => o.date === t).length;
-        document.getElementById('dayRev').innerText = (count * 0.3).toFixed(2) + " د.أ";
-        let c = {}; orders.forEach(o => { if(o.name) c[o.name]=(c[o.name]||0)+1; });
-        document.getElementById('topCap').innerText = Object.keys(c).length > 0 ? Object.keys(c).reduce((a,b)=>c[a]>c[b]?a:b) : "-";
+        let d = allOrders.filter(o => o.date === t).reduce((s,o)=>s+(parseFloat(o.lockedCommission)||0.3),0);
+        document.getElementById('dailyProfit').innerText = d.toFixed(2) + " د.أ";
+        let c = {}; allOrders.forEach(o => { if(o.name) c[o.name] = (c[o.name] || 0) + 1; });
+        let top = Object.keys(c).reduce((a, b) => c[a] > c[b] ? a : b, "-");
+        document.getElementById('topCaptain').innerText = top;
     }
-    function logout() { sessionStorage.clear(); location.href="index.html"; }
 </script>
 </body>
 </html>

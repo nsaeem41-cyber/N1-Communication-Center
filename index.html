@@ -85,20 +85,23 @@
             const u = document.getElementById('userInput').value;
             const p = document.getElementById('passInput').value;
 
+            // دخول الأدمن الرئيسي
             if (u === "admin" && p === "n1_2026") {
                 renderTable();
                 showPanel('adminPanel');
                 return;
             }
 
+            // دخول الشركات
             const found = companies.find(c => c.user === u && c.pass === p);
             if (found) {
                 const now = new Date();
                 if (now > new Date(found.expiry)) {
                     alert("نعتذر منك، انتهت صلاحية الاشتراك.");
                 } else {
-                    // تثبيت اسم الشركة في الذاكرة لمنع تغيره
+                    // السطرين اللي بيعملوا الربط القوي مع الكود الثاني
                     sessionStorage.setItem('currentActiveCompanyName', found.name);
+                    sessionStorage.setItem('currentActiveUser', found.user); 
                     window.location.href = "company_dashboard.html";
                 }
             } else {
@@ -151,7 +154,7 @@
         }
 
         function deleteComp(id) {
-            if(confirm("تأكيد حذف المنشأة نهائياً؟")) {
+            if(confirm("تأكيد حذف المنشأة نهائياً؟ سيتم طرد المستخدم فوراً عند محاولته العمل.")) {
                 companies = companies.filter(c => c.id !== id);
                 localStorage.setItem('n1_companies', JSON.stringify(companies));
                 renderTable();

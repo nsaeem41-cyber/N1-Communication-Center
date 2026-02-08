@@ -1,1 +1,140 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N One - الإدارة المركزية</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; direction: rtl; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--success); color: white; margin-bottom: 20px; }
+        .btn-login { background: var(--primary); color: white; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 14px; }
+        th { background: #eee; }
+        .status-active { color: green; font-weight: bold; }
+        .status-expired { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="loginArea" class="box">
+        <h2>تسجيل الدخول للنظام</h2>
+        <input type="text" id="userInput" placeholder="اسم المستخدم">
+        <input type="password" id="passInput" placeholder="كلمة المرور">
+        <button class="btn-login" onclick="checkLogin()">دخول</button>
+    </div>
+
+    <div id="adminArea" class="box hidden">
+        <h2>إدارة الشركات والاشتراكات</h2>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h3>إضافة شركة جديدة</h3>
+            <input type="text" id="cName" placeholder="اسم الشركة">
+            <input type="text" id="cUser" placeholder="يوزر نيم">
+            <input type="password" id="cPass" placeholder="باسورد">
+            <select id="cPlan">
+                <option value="30">30 يوم</option>
+                <option value="90">90 يوم</option>
+                <option value="365">سنة</option>
+            </select>
+            <button class="btn-add" onclick="addCompany()">اعتماد الحساب</button>
+        </div>
+        
+        <table id="compTable">
+            <thead><tr><th>الشركة</th><th>الانتهاء</th><th>الحالة</th><th>إجراء</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        // مصفوفة الشركات مخزنة في المتصفح
+        let myCompanies = JSON.parse(localStorage.getItem('n1_sys_companies')) || [];
+
+        function checkLogin() {
+            const u = document.getElementById('userInput').value;
+            const p = document.getElementById('passInput').value;
+
+            // دخولك أنت كمدير نظام
+            if (u === "admin" && p === "n1_2026") {
+                renderTable();
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('adminArea').classList.remove('hidden');
+                return;
+            }
+
+            // دخول الشركات
+            const found = myCompanies.find(c => c.user === u && c.pass === p);
+            if (found) {
+                const now = new Date();
+                if (now > new Date(found.expiry) || found.active === false) {
+                    alert("الاشتراك منتهي أو الحساب معطل!");
+                } else {
+                    // تحويل المندوب لصفحته (الكود الثاني الخاص بك)
+                    window.location.href = "company_dashboard.html"; 
+                }
+            } else {
+                alert("بيانات خاطئة!");
+            }
+        }
+
+        function addCompany() {
+            const name = document.getElementById('cName').value;
+            const user = document.getElementById('cUser').value;
+            const pass = document.getElementById('cPass').value;
+            const days = parseInt(document.getElementById('cPlan').value);
+
+            if(!name || !user || !pass) return alert("كمل البيانات!");
+
+            let expDate = new Date();
+            expDate.setDate(expDate.getDate() + days);
+
+            myCompanies.push({
+                name: name,
+                user: user,
+                pass: pass,
+                expiry: expDate,
+                active: true
+            });
+
+            localStorage.setItem('n1_sys_companies', JSON.stringify(myCompanies));
+            alert("تمت الإضافة بنجاح");
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.querySelector("#compTable tbody");
+            tbody.innerHTML = "";
+            const now = new Date();
+            myCompanies.forEach((c, index) => {
+                const isExpired = now > new Date(c.expiry);
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${new Date(c.expiry).toLocaleDateString()}</td>
+                        <td class="${isExpired ? 'status-expired' : 'status-active'}">${isExpired ? 'منتهي' : 'نشط'}</td>
+                        <td><button onclick="deleteComp(${index})" style="background:red; color:white; border:none; padding:5px; border-radius:4px;">حذف</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteComp(idx) {
+            if(confirm("حذف الحساب؟")) {
+                myCompanies.splice(idx, 1);
+                localStorage.setItem('n1_sys_companies', JSON.stringify(myCompanies));
+                renderTable();
+            }
+        }
+    </script>
+</body>
+</html>

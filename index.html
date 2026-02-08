@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N One Control | بوابة الإدارة المركزية</title>
     <style>
-        :root { --primary: #2c3e50; --accent: #3498db; --success: #27ae60; --danger: #e74c3c; --warning: #f39c12; --bg: #f4f7f6; --white: #ffffff; }
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .container { background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 95%; max-width: 850px; border-top: 6px solid var(--primary); }
         .hidden { display: none !important; }
@@ -26,6 +34,7 @@
     </style>
 </head>
 <body>
+
     <div id="loginSection" class="container" style="max-width: 400px;">
         <h1>تسجيل الدخول</h1>
         <input type="text" id="userInput" placeholder="اسم المستخدم">
@@ -36,7 +45,8 @@
     <div id="adminPanel" class="container hidden">
         <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
         <div style="clear: both;"></div>
-        <h2 id="formHeader">إضافة منشأة جديدة</h2>
+        <h2 id="formHeader">إضافة منشأة جديدة (مزامنة سحابية)</h2>
+        
         <div class="form-box">
             <input type="hidden" id="editId">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -50,25 +60,54 @@
                     <option value="365">سنة كاملة</option>
                 </select>
             </div>
-            <button class="btn-save" id="mainActionBtn" onclick="saveCompany()">حفظ البيانات المعتمدة</button>
+            <button class="btn-save" id="mainActionBtn" onclick="saveCompany()">تفعيل ومزامنة الحساب</button>
             <button class="btn-del hidden" id="cancelEditBtn" onclick="resetForm()" style="width: 100%; margin-top: 5px;">إلغاء التعديل</button>
         </div>
+
         <table>
-            <thead><tr><th>المنشأة</th><th>المستخدم</th><th>تاريخ الانتهاء</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>المنشأة</th>
+                    <th>المستخدم</th>
+                    <th>تاريخ الانتهاء</th>
+                    <th>حالة الحساب</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
             <tbody id="companyTableBody"></tbody>
         </table>
     </div>
 
     <script>
+        const API_URL = 'https://sheetdb.io/api/v1/xsp51h4e6tvnw';
         let companies = JSON.parse(localStorage.getItem('n1_companies')) || [];
+
+        async function syncFromCloud() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                if(data && data.length > 0) {
+                    const cloudComps = data.filter(item => item.user && item.pass);
+                    if(cloudComps.length > 0) {
+                        companies = cloudComps;
+                        localStorage.setItem('n1_companies', JSON.stringify(companies));
+                        if(!document.getElementById('adminPanel').classList.contains('hidden')) renderTable();
+                    }
+                }
+            } catch(e) { console.log("فشل المزامنة"); }
+        }
+
+        window.onload = syncFromCloud;
+
         function validateLogin() {
             const u = document.getElementById('userInput').value;
             const p = document.getElementById('passInput').value;
             if (u === "admin" && p === "n1_2026") { renderTable(); showPanel('adminPanel'); return; }
+            
             const found = companies.find(c => c.user === u && c.pass === p);
             if (found) {
                 const now = new Date();
-                if (now > new Date(found.expiry)) { alert("نعتذر منك، انتهت صلاحية الاشتراك."); }
+                if (now > new Date(found.expiry)) { alert("انتهت صلاحية الاشتراك."); }
                 else {
                     sessionStorage.setItem('currentActiveCompanyName', found.name);
                     sessionStorage.setItem('currentActiveUser', found.user);
@@ -76,28 +115,43 @@
                 }
             } else { alert("بيانات الدخول غير صحيحة."); }
         }
-        function saveCompany() {
+
+        async function saveCompany() {
             const id = document.getElementById('editId').value;
             const name = document.getElementById('compName').value;
             const user = document.getElementById('compUser').value;
             const pass = document.getElementById('compPass').value;
             const days = parseInt(document.getElementById('compPlan').value);
-            if (!name || !user || !pass) return alert("يرجى إكمال كافة الحقول.");
+            
+            if (!name || !user || !pass) return alert("يرجى إكمال الحقول.");
+
+            let exp = new Date();
             if (id) {
-                companies = companies.map(c => {
-                    if (c.id == id) {
-                        c.name = name; c.user = user; c.pass = pass;
-                        if (days > 0) { let ne = new Date(); ne.setDate(ne.getDate() + days); c.expiry = ne.toISOString(); }
-                    } return c;
-                });
+                const existing = companies.find(c => c.id == id);
+                if (days > 0) exp.setDate(exp.getDate() + days); else exp = new Date(existing.expiry);
             } else {
-                if (days === 0) return alert("يرجى تحديد مدة الاشتراك.");
-                let exp = new Date(); exp.setDate(exp.getDate() + days);
-                companies.push({ id: Date.now(), name, user, pass, expiry: exp.toISOString() });
+                if (days === 0) return alert("اختر مدة الاشتراك.");
+                exp.setDate(exp.getDate() + days);
             }
-            localStorage.setItem('n1_companies', JSON.stringify(companies));
-            resetForm(); renderTable();
+
+            const companyData = { id: id || Date.now(), name, user, pass, expiry: exp.toISOString() };
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [companyData] })
+                });
+                
+                if(id) { companies = companies.map(c => c.id == id ? companyData : c); }
+                else { companies.push(companyData); }
+                
+                localStorage.setItem('n1_companies', JSON.stringify(companies));
+                alert("تم الحفظ والمزامنة بنجاح ");
+                resetForm(); renderTable();
+            } catch(e) { alert("خطأ في المزامنة"); }
         }
+
         function editComp(id) {
             const c = companies.find(x => x.id == id);
             document.getElementById('editId').value = c.id;
@@ -105,16 +159,18 @@
             document.getElementById('compUser').value = c.user;
             document.getElementById('compPass').value = c.pass;
             document.getElementById('formHeader').innerText = "تعديل منشأة: " + c.name;
-            document.getElementById('mainActionBtn').innerText = "تحديث البيانات";
+            document.getElementById('mainActionBtn').innerText = "تحديث البيانات أون لاين";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
         }
+
         function deleteComp(id) {
-            if(confirm("تأكيد حذف المنشأة؟ سيتم إيقاف دخولهم فوراً.")) {
+            if(confirm("تأكيد حذف المنشأة؟")) {
                 companies = companies.filter(c => c.id !== id);
                 localStorage.setItem('n1_companies', JSON.stringify(companies));
                 renderTable();
             }
         }
+
         function renderTable() {
             const tbody = document.getElementById('companyTableBody'); tbody.innerHTML = "";
             const now = new Date();
@@ -123,10 +179,12 @@
                 tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.user}</td><td>${new Date(c.expiry).toLocaleDateString('en-GB')}</td><td class="${isExp ? 'status-expired' : 'status-active'}">${isExp ? 'منتهي' : 'نشط'}</td><td><button class="btn-edit" onclick="editComp(${c.id})">تعديل</button> <button class="btn-del" onclick="deleteComp(${c.id})">حذف</button></td></tr>`;
             });
         }
+
         function resetForm() {
             document.getElementById('editId').value = ""; document.getElementById('compName').value = ""; document.getElementById('compUser').value = ""; document.getElementById('compPass').value = ""; document.getElementById('compPlan').value = "0";
-            document.getElementById('formHeader').innerText = "إضافة منشأة جديدة"; document.getElementById('mainActionBtn').innerText = "حفظ البيانات المعتمدة"; document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('formHeader').innerText = "إضافة منشأة جديدة"; document.getElementById('mainActionBtn').innerText = "تفعيل ومزامنة الحساب"; document.getElementById('cancelEditBtn').classList.add('hidden');
         }
+
         function showPanel(id) { document.getElementById('loginSection').classList.add('hidden'); document.getElementById(id).classList.remove('hidden'); }
         function logout() { sessionStorage.clear(); location.reload(); }
     </script>

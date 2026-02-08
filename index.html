@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N1 - مركز الرسائل الرسمي</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background-color: #2980b9; }
+        .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>N1 | مركز إدارة الرسائل</h2>
+        <div class="form-group">
+            <label>اسم المرسل:</label>
+            <input type="text" id="sender" placeholder="ادخل الاسم هنا...">
+        </div>
+        <div class="form-group">
+            <label>محتوى الرسالة:</label>
+            <textarea id="message" rows="5" placeholder="اكتب رسالتك الرسمية هنا..."></textarea>
+        </div>
+        <button onclick="sendMessage()">إرسال الرسالة الآن</button>
+        <div class="footer">نظام إدارة N1 - جميع الحقوق محفوظة</div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const sender = document.getElementById('sender').value;
+            const msg = document.getElementById('message').value;
+            if(sender && msg) {
+                alert('تم استلام رسالتك بنجاح في نظام N1 يا ' + sender);
+                // هنا مستقبلاً بنربط الكود بقاعدة بيانات
+            } else {
+                alert('يرجى تعبئة كافة الخانات الرسمية');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N1 Pro - الصفحة الجديدة</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --n1-gold: #d4af37;
+            --n1-dark: #1a1a1a;
+            --n1-white: #ffffff;
+            --n1-gray: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--n1-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--n1-dark);
+        }
+
+        .header-pro {
+            background-color: var(--n1-dark);
+            color: var(--n1-gold);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--n1-gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            max-width: 1100px;
+            margin: -30px auto 40px;
+            padding: 20px;
+        }
+
+        .card-pro {
+            background: var(--n1-white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .grid-pro {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--n1-dark);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--n1-gold);
+            outline: none;
+        }
+
+        .btn-n1 {
+            background-color: var(--n1-dark);
+            color: var(--n1-gold);
+            border: 2px solid var(--n1-gold);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .btn-n1:hover {
+            background-color: var(--n1-gold);
+            color: var(--n1-dark);
+        }
+
+        #statusBox {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            font-weight: bold;
+        }
+
+        .stats-badge {
+            background: var(--n1-dark);
+            color: var(--n1-gold);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-pro">
+    <h1>شركة N1 - النسخة الاحترافية 😊</h1>
+    <p>بداية جديدة.. إمكانيات غير محدودة</p>
+</div>
+
+<div class="main-content">
+    <div class="grid-pro">
+        <div class="card-pro">
+            <h3>تسجيل طلب جديد 😊</h3>
+            <form id="proOrderForm">
+                <div class="input-group">
+                    <label>اسم المندوب</label>
+                    <input type="text" name="name" required placeholder="الاسم الكامل">
+                </div>
+                <div class="input-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" name="phone" required placeholder="07XXXXXXXX">
+                </div>
+                <div class="input-group">
+                    <label>الموقع (التوصيل)</label>
+                    <input type="text" name="location" required placeholder="المدينة / المنطقة">
+                </div>
+                <div class="grid-pro" style="grid-template-columns: 1fr 1fr;">
+                    <div class="input-group">
+                        <label>الأجرة</label>
+                        <input type="number" name="fee" required placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label>السعر الكلي</label>
+                        <input type="number" name="price" required placeholder="0.00">
+                    </div>
+                </div>
+                <button type="submit" class="btn-n1" id="proSubmitBtn">إرسال للسحابة الجديدة 😊</button>
+            </form>
+            <div id="statusBox"></div>
+        </div>
+
+        <div class="card-pro">
+            <h3>لوحة الإنجازات اليومية 😊</h3>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div class="stats-badge">الطلبات: <span id="count">0</span></div>
+                <div class="stats-badge">الإيرادات: <span id="money">0</span> JOD</div>
+            </div>
+            <canvas id="proChart" style="max-height: 250px;"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
+    const form = document.getElementById('proOrderForm');
+    const statusBox = document.getElementById('statusBox');
+    
+    let totalOrders = 0;
+    let totalCash = 0;
+
+    // تهيئة الرسم البياني المطور
+    const ctx = document.getElementById('proChart').getContext('2d');
+    const proChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['بداية النشاط'],
+            datasets: [{
+                label: 'حركة الطلبات',
+                data: [0],
+                borderColor: '#d4af37',
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('proSubmitBtn');
+        btn.disabled = true;
+        btn.innerText = 'جاري المعالجة السحابية... 😊';
+
+        const formData = new FormData(form);
+        const orderData = Object.fromEntries(formData.entries());
+        
+        // إضافة بيانات النظام التلقائية
+        orderData.timestamp = new Date().toLocaleString('ar-EG');
+        orderData.date = new Date().toLocaleDateString('ar-EG');
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [orderData] })
+            });
+
+            if(response.ok) {
+                statusBox.style.display = 'block';
+                statusBox.style.backgroundColor = '#d4edda';
+                statusBox.style.color = '#155724';
+                statusBox.innerText = 'تم التخزين في القاعدة الجديدة بنجاح 😊';
+                
+                // تحديث اللوحة
+                totalOrders++;
+                totalCash += parseFloat(orderData.fee);
+                document.getElementById('count').innerText = totalOrders;
+                document.getElementById('money').innerText = totalCash.toFixed(2);
+                
+                // تحديث الرسم البياني
+                proChart.data.labels.push(orderData.timestamp.split(' ')[1]); 
+                proChart.data.datasets[0].data.push(totalOrders);
+                proChart.update();
+
+                form.reset();
+            }
+        } catch (error) {
+            statusBox.style.display = 'block';
+            statusBox.style.backgroundColor = '#f8d7da';
+            statusBox.style.innerText = 'تعذر الاتصال.. تأكدي من الجسر يا بطة 😊';
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'إرسال للسحابة الجديدة 😊';
+        }
+    });
+</script>
+
+</body>
+</html>

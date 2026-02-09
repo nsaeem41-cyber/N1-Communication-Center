@@ -2,121 +2,50 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N1 Pro - التحكم المطلق 😊</title>
+    <title>N1 Pro - السحابة الحقيقية 😊</title>
     <style>
-        :root { --gold: #d4af37; --dark: #1a1a1a; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; text-align: center; }
-        .nav-top { background: var(--dark); padding: 15px; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-around; }
-        .nav-top a { color: var(--gold); text-decoration: none; font-weight: bold; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 8px; }
-        .header { background: var(--dark); color: var(--gold); padding: 25px; }
-        .container { max-width: 800px; margin: 20px auto; padding: 15px; }
-        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .btn-main { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
-        .table-res { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .table-res th { background: #3498db; color: white; padding: 10px; }
-        .table-res td { border: 1px solid #eee; padding: 10px; background: white; }
-        .btn-edit { background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin: 2px; }
-        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin: 2px; }
-        #status { display: none; padding: 10px; border-radius: 8px; margin: 10px; font-weight: bold; }
-        .logout-btn { background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+        body { font-family: sans-serif; background: #1a1a1a; color: #d4af37; text-align: center; padding: 50px; }
+        .box { border: 2px solid #d4af37; padding: 20px; border-radius: 20px; background: #222; max-width: 500px; margin: auto; }
+        button { background: #d4af37; color: #1a1a1a; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        #log { margin-top: 20px; color: #27ae60; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="nav-top">
-    <a href="index.html">الرئيسية 🏠</a>
-    <a href="company_dashboard.html">الجرد 📊</a>
-    <a href="n1_pro.html" style="background: var(--gold); color: var(--dark);">التحكم ✨</a>
-</div>
-
-<div class="header">
-    <h1>لوحة تحكم حبة السكر 😊</h1>
-    <p>إدارة الطلبات، التعديل، والحذف المباشر</p>
-</div>
-
-<div class="container">
-    <div class="card">
-        <h3>بحث وتحكم في الطلبات 😊</h3>
-        <input type="text" id="searchName" placeholder="اكتبي اسم المندوب للبحث..." style="width: 70%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
-        <button onclick="loadData()" class="btn-main" style="width: 25%; display: inline-block;">بحث 🔍</button>
-        <div id="status"></div>
-        
-        <table class="table-res">
-            <thead>
-                <tr>
-                    <th>الموقع</th>
-                    <th>إجراءات</th>
-                </tr>
-            </thead>
-            <tbody id="resultBody">
-                </tbody>
-        </table>
-    </div>
+<div class="box">
+    <h1>نظام N1 السحابي الأصلي 😊</h1>
+    <p>هذا النظام مرتبط بملف "N One Database" مباشرة</p>
     
-    <button class="logout-btn" onclick="logout()">حفظ وإغلاق النظام 🔒</button>
+    <input type="text" id="testName" placeholder="اكتبي اسم تجريبي هنا..." style="width: 80%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+    <br>
+    <button onclick="sendToCloud()">إرسال للسحابة الآن 🚀</button>
+    
+    <div id="log"></div>
 </div>
 
 <script>
     const API = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
 
-    // تحميل البيانات وتفعيل الأزرار 😊
-    async function loadData() {
-        const query = document.getElementById('searchName').value;
-        const body = document.getElementById('resultBody');
-        body.innerHTML = 'جاري جلب البيانات... 😊';
-
+    async function sendToCloud() {
+        const name = document.getElementById('testName').value;
+        const log = document.getElementById('log');
+        log.innerText = 'جاري الاتصال بالسحابة... 😊';
+        
         try {
-            const res = await fetch(API);
-            const data = await res.json();
-            body.innerHTML = '';
-
-            const filtered = data.filter(item => item.name.includes(query));
-            filtered.forEach(item => {
-                body.innerHTML += `
-                    <tr>
-                        <td>${item.location} (${item.name})</td>
-                        <td>
-                            <button class="btn-edit" onclick="editOrder('${item.name}')">تعديل</button>
-                            <button class="btn-delete" onclick="deleteOrder('${item.name}')">حذف</button>
-                        </td>
-                    </tr>
-                `;
+            const res = await fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [{ name: name, date: new Date().toLocaleString() }] })
             });
-        } catch (e) { alert('في مشكلة بالاتصال يا بطة 😊'); }
-    }
-
-    // وظيفة الحذف الحقيقية 😊
-    async function deleteOrder(name) {
-        if(confirm(`بدك تحذفي طلب ${name} نهائياً 😊؟`)) {
-            const status = document.getElementById('status');
-            status.style.display = 'block'; status.innerText = 'جاري الحذف من السحابة...';
             
-            try {
-                await fetch(`${API}/name/${name}`, { method: 'DELETE' });
-                status.style.background = '#d4edda'; status.innerText = 'تم الحذف بنجاح 😊';
-                loadData(); // تحديث القائمة
-            } catch (e) { alert('المشاكسة منعت الحذف! 😊'); }
-        }
-    }
-
-    // وظيفة التعديل الحقيقية 😊
-    async function editOrder(name) {
-        const newLoc = prompt(`تعديل الموقع لـ ${name}:`);
-        if(newLoc) {
-            await fetch(`${API}/name/${name}`, {
-                method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({data: {location: newLoc}})
-            });
-            alert('تم التعديل بكل رقي 😊');
-            loadData();
-        }
-    }
-
-    function logout() {
-        if(confirm('بدك تسكري النظام يا غالية 😊؟')) {
-            document.body.innerHTML = '<h1>تم الحفظ والإغلاق بنجاح 😊 نراكِ لاحقاً يا حبة السكر</h1>';
+            if(res.ok) {
+                log.innerText = '✅ بشارة يا حبة السكر! المعلومة طارت للسحابة ونزلت بالإكسل فوراً 😊';
+                document.getElementById('testName').value = '';
+            } else {
+                log.innerText = '❌ في مشاكسة في الجسر! تأكدي من الربط 😊';
+            }
+        } catch (e) {
+            log.innerText = '❌ المتصفح مش قادر يوصل للسحابة.. تأكدي من الإنترنت 😊';
         }
     }
 </script>

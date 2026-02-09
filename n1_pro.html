@@ -3,58 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N1 Pro - الإدارة المتكاملة 😊</title>
+    <title>N1 Pro - النظام الموحد الشامل 😊</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --n1-gold: #d4af37; --n1-dark: #1a1a1a; --n1-gray: #f8f9fa; --n1-white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--n1-gray); margin: 0; padding: 0; color: var(--n1-dark); }
-        .header-pro { background-color: var(--n1-dark); color: var(--n1-gold); padding: 30px 20px; text-align: center; border-bottom: 4px solid var(--n1-gold); }
-        .main-content { max-width: 1200px; margin: 20px auto; padding: 20px; }
-        .card-pro { background: var(--n1-white); border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .grid-pro { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--n1-dark); }
-        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px; font-size: 15px; box-sizing: border-box; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--n1-gold); outline: none; }
-        .btn-n1 { background-color: var(--n1-dark); color: var(--n1-gold); border: 2px solid var(--n1-gold); padding: 15px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; }
-        .btn-n1:hover { background-color: var(--n1-gold); color: var(--n1-dark); }
-        .search-box { background: #eef2f3; padding: 15px; border-radius: 15px; margin-bottom: 20px; display: flex; gap: 10px; }
-        #statusBox { margin-top: 15px; padding: 15px; border-radius: 10px; text-align: center; display: none; font-weight: bold; }
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; color: white; }
-        .status-pending { background: #f39c12; }
-        .status-done { background: #27ae60; }
-        .stats-container { display: flex; justify-content: space-around; margin-bottom: 20px; background: var(--n1-dark); color: var(--n1-gold); padding: 15px; border-radius: 15px; }
+        :root {
+            --n1-gold: #d4af37;
+            --n1-dark: #1a1a1a;
+            --n1-gray: #f8f9fa;
+            --n1-white: #ffffff;
+            --n1-success: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--n1-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--n1-dark);
+        }
+
+        /* شريط التنقل العلوي للربط بين الأكواد الثلاثة */
+        .n1-nav {
+            background-color: var(--n1-dark);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            border-bottom: 3px solid var(--n1-gold);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .n1-nav a {
+            color: var(--n1-gold);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border: 1px solid var(--n1-gold);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .n1-nav a:hover, .n1-nav a.active {
+            background-color: var(--n1-gold);
+            color: var(--n1-dark);
+        }
+
+        .header-pro {
+            background-color: var(--n1-dark);
+            color: var(--n1-gold);
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .card-pro {
+            background: var(--n1-white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .grid-pro {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--n1-gold);
+            outline: none;
+        }
+
+        .btn-n1 {
+            background-color: var(--n1-dark);
+            color: var(--n1-gold);
+            border: 2px solid var(--n1-gold);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .btn-n1:hover {
+            background-color: var(--n1-gold);
+            color: var(--n1-dark);
+        }
+
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            background: var(--n1-dark);
+            color: var(--n1-gold);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stat-item h4 { margin: 0; font-size: 14px; opacity: 0.8; }
+        .stat-item p { margin: 5px 0 0; font-size: 24px; font-weight: bold; }
+
+        #statusBox {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #searchResults {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .result-card {
+            background: #f9f9f9;
+            padding: 10px;
+            border-right: 4px solid var(--n1-gold);
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
 
+<nav class="n1-nav">
+    <a href="index.html">الصفحة الأساسية 😊</a>
+    <a href="company_dashboard.html">لوحة الإحصائيات 😊</a>
+    <a href="n1_pro.html" class="active">النظام الموحد Pro 😊</a>
+</nav>
+
 <div class="header-pro">
-    <h1>نظام N1 الاحترافي الذكي 😊</h1>
-    <p>إدارة الشركات المستقلة والجرد السحابي</p>
+    <h1>نظام N1 - الإدارة السحابية الاحترافية 😊</h1>
+    <p>كل الأنظمة مرتبطة بجسر واحد وجدول إكسل أصلي</p>
 </div>
 
 <div class="main-content">
+    
     <div class="card-pro">
-        <label style="font-size: 1.2rem;">اختيار الشركة (لضمان استقلالية البيانات) 😊</label>
-        <select id="companySelect" onchange="switchCompany()">
-            <option value="qzfkwfzcpbrsm">شركة N1 - المركز الرئيسي</option>
-            <option value="new_company_bridge">شركة جديدة (عميل جديد)</option>
+        <label>اختيار حساب الشركة (الاستقلالية التامة) 😊</label>
+        <select id="companySelect">
+            <option value="qzfkwfzcpbrsm">N1 - حساب الإدارة الرئيسي</option>
+            <option value="new_bridge_2">حساب شركة جديدة (قيد الإعداد)</option>
         </select>
     </div>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="ابحث عن مندوب أو طلب بالاسم أو الهاتف... 😊">
-        <button class="btn-n1" style="width: 150px; margin: 0;" onclick="searchData()">بحث</button>
+    <div class="card-pro">
+        <h3>البحث السريع عن الطلبات 😊</h3>
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="ابحث باسم المندوب أو رقم الهاتف...">
+            <button class="btn-n1" style="width: 120px; padding: 10px;" onclick="searchInCloud()">بحث</button>
+        </div>
+        <div id="searchResults"></div>
     </div>
 
     <div class="grid-pro">
         <div class="card-pro">
-            <h3>تسجيل طلب احترافي 😊</h3>
-            <form id="masterForm">
-                <div class="input-group"><label>اسم المندوب</label><input type="text" name="name" required></div>
-                <div class="input-group"><label>رقم الهاتف</label><input type="text" name="phone" required></div>
+            <h3>تسجيل طلب جديد 😊</h3>
+            <form id="proForm">
                 <div class="input-group">
-                    <label>الموقع (المناطق المعتمدة)</label>
+                    <label>اسم المندوب</label>
+                    <input type="text" name="name" required placeholder="الاسم الكامل">
+                </div>
+                <div class="input-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" name="phone" required placeholder="07XXXXXXXX">
+                </div>
+                <div class="input-group">
+                    <label>المنطقة (الموقع)</label>
                     <select name="location">
                         <option value="عمان">عمان</option>
                         <option value="الزرقاء">الزرقاء</option>
@@ -62,112 +219,147 @@
                         <option value="المفرق">المفرق</option>
                     </select>
                 </div>
-                <div class="grid-pro" style="grid-template-columns: 1fr 1fr;">
-                    <div class="input-group"><label>الأجرة</label><input type="number" name="delivery" required></div>
-                    <div class="input-group"><label>السعر الكلي</label><input type="number" name="price" required></div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>الأجرة</label>
+                        <input type="number" name="delivery" required step="0.01">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>السعر الكلي</label>
+                        <input type="number" name="price" required step="0.01">
+                    </div>
                 </div>
                 <div class="input-group">
-                    <label>حالة الطلب</label>
+                    <label>حالة الطلب الحالية</label>
                     <select name="status">
                         <option value="قيد التوصيل">قيد التوصيل 🚚</option>
                         <option value="تم التسليم">تم التسليم ✅</option>
                         <option value="ملغي">ملغي ❌</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-n1" id="submitBtn">تأكيد الإرسال للسحابة 😊</button>
+                <button type="submit" class="btn-n1" id="submitBtn">إرسال لجدول الإكسل الأصلي 😊</button>
             </form>
             <div id="statusBox"></div>
         </div>
 
         <div class="card-pro">
-            <h3>الإنجازات المباشرة 😊</h3>
-            <div class="stats-container">
-                <div>الطلبات: <span id="count">0</span></div>
-                <div>المبالغ: <span id="money">0</span> JOD</div>
+            <h3>جرد العمليات والنتائج 😊</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h4>إجمالي الطلبات</h4>
+                    <p id="totalCount">0</p>
+                </div>
+                <div class="stat-item">
+                    <h4>مجموع الأجور</h4>
+                    <p id="totalMoney">0.00</p>
+                </div>
             </div>
-            <canvas id="masterChart"></canvas>
-            <div id="searchResults" style="margin-top: 20px;"></div>
+            <canvas id="n1Chart" style="max-height: 250px;"></canvas>
+            <div style="margin-top: 20px; text-align: center;">
+                <p style="font-size: 13px; color: #666;">البيانات الآن تُحفظ في ملف: <br><strong>N One Database</strong></p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    let currentAPI = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
-    let totalOrders = 0; let totalCash = 0;
+    const API_BASE = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
+    const form = document.getElementById('proForm');
+    const statusBox = document.getElementById('statusBox');
+    
+    let ordersCount = 0;
+    let totalCash = 0;
 
-    function switchCompany() {
-        const select = document.getElementById('companySelect');
-        currentAPI = 'https://sheetdb.io/api/v1/' + select.value;
-        alert('تم تحويل النظام لبيانات الشركة المختار بكل رقي 😊');
-        // هنا يمكن تصفير العدادات عند التبديل
-    }
-
-    const ctx = document.getElementById('masterChart').getContext('2d');
-    const masterChart = new Chart(ctx, {
+    // تهيئة الرسم البياني
+    const ctx = document.getElementById('n1Chart').getContext('2d');
+    const n1Chart = new Chart(ctx, {
         type: 'bar',
-        data: { labels: ['عمان', 'الزرقاء', 'إربد', 'المفرق'], datasets: [{ label: 'توزيع المناطق', data: [0, 0, 0, 0], backgroundColor: '#d4af37' }] }
+        data: {
+            labels: ['عمان', 'الزرقاء', 'إربد', 'المفرق'],
+            datasets: [{
+                label: 'عدد الطلبات حسب المنطقة',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#d4af37',
+                borderRadius: 8
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
     });
 
-    const form = document.getElementById('masterForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = 'جاري المعالجة... 😊';
-        
+        btn.disabled = true;
+        btn.innerText = 'جاري التخزين السحابي... 😊';
+
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        
+        // إضافة بيانات الوقت تلقائياً
         data.timestamp = new Date().toLocaleString('ar-EG');
         data.date = new Date().toLocaleDateString('ar-EG');
+        data.id = 'N1-' + Math.floor(Math.random() * 10000);
 
         try {
-            const response = await fetch(currentAPI, {
+            const response = await fetch(API_BASE, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ data: [data] })
             });
+
             if(response.ok) {
-                document.getElementById('statusBox').style.display = 'block';
-                document.getElementById('statusBox').style.backgroundColor = '#d4edda';
-                document.getElementById('statusBox').innerText = 'تم التخزين المنفصل بنجاح 😊';
+                statusBox.style.display = 'block';
+                statusBox.style.background = '#d4edda';
+                statusBox.style.color = '#155724';
+                statusBox.innerText = 'تم التخزين في الجدول الأصلي بنجاح 😊';
                 
-                totalOrders++; totalCash += parseFloat(data.delivery);
-                document.getElementById('count').innerText = totalOrders;
-                document.getElementById('money').innerText = totalCash.toFixed(2);
+                // تحديث العدادات والجراف
+                ordersCount++;
+                totalCash += parseFloat(data.delivery);
+                document.getElementById('totalCount').innerText = ordersCount;
+                document.getElementById('totalMoney').innerText = totalCash.toFixed(2);
                 
-                // تحديث الرسم البياني للمناطق
-                updateChartData(data.location);
+                const locIndex = n1Chart.data.labels.indexOf(data.location);
+                if(locIndex !== -1) {
+                    n1Chart.data.datasets[0].data[locIndex]++;
+                    n1Chart.update();
+                }
+
                 form.reset();
+                setTimeout(() => { statusBox.style.display = 'none'; }, 4000);
             }
         } catch (error) {
-            alert('حدث خطأ في الجسر.. تأكدي من الربط يا بطة 😊');
-        } finally { btn.disabled = false; btn.innerText = 'تأكيد الإرسال للسحابة 😊'; }
+            statusBox.style.display = 'block';
+            statusBox.style.background = '#f8d7da';
+            statusBox.innerText = 'حدث خطأ في الجسر.. طمني خالتو ميمي 😊';
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'إرسال لجدول الإكسل الأصلي 😊';
+        }
     });
 
-    function updateChartData(loc) {
-        const labels = masterChart.data.labels;
-        const index = labels.indexOf(loc);
-        if(index !== -1) {
-            masterChart.data.datasets[0].data[index]++;
-            masterChart.update();
-        }
-    }
-
-    async function searchData() {
+    async function searchInCloud() {
         const query = document.getElementById('searchInput').value;
-        const resultsDiv = document.getElementById('searchResults');
-        resultsDiv.innerHTML = 'جاري البحث في السحابة... 😊';
+        const resultsArea = document.getElementById('searchResults');
+        if(!query) return;
         
+        resultsArea.innerHTML = 'جاري البحث... 😊';
         try {
-            const response = await fetch(`${currentAPI}/search?name=${query}`);
-            const data = await response.json();
-            if(data.length > 0) {
-                resultsDiv.innerHTML = `<h4>نتائج البحث:</h4>`;
-                data.forEach(item => {
-                    resultsDiv.innerHTML += `<p>😊 المندوب: ${item.name} - الحالة: ${item.status}</p>`;
+            const res = await fetch(`${API_BASE}/search?name=${query}`);
+            const results = await res.json();
+            resultsArea.innerHTML = '';
+            if(results.length > 0) {
+                results.forEach(item => {
+                    resultsArea.innerHTML += `
+                        <div class="result-card">
+                            <strong>${item.name}</strong> - ${item.location}<br>
+                            الحالة: ${item.status} | التاريخ: ${item.date}
+                        </div>`;
                 });
-            } else { resultsDiv.innerHTML = 'لم نجد بيانات بهذا الاسم يا بطة 😊'; }
-        } catch (e) { resultsDiv.innerHTML = 'ميزة البحث تحتاج تفعيل الـ API Search 😊'; }
+            } else { resultsArea.innerHTML = 'لم يتم العثور على نتائج 😊'; }
+        } catch (e) { resultsArea.innerHTML = 'الميزة قيد التحديث السحابي 😊'; }
     }
 </script>
+
 </body>
 </html>

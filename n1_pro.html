@@ -3,160 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N1 Pro - لوحة التحكم المطلقة 😊</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>N1 Pro - التحكم المطلق 😊</title>
     <style>
-        :root { --n1-gold: #d4af37; --n1-dark: #1a1a1a; --n1-gray: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--n1-gray); margin: 0; padding: 0; }
-        .admin-bar { background: var(--n1-dark); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--n1-gold); }
-        .logout-btn { background: #c0392b; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .header-pro { background: var(--n1-dark); color: var(--n1-gold); padding: 30px; text-align: center; }
-        .main-container { max-width: 1200px; margin: 20px auto; padding: 20px; }
-        .card-pro { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        .btn-action { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; border: 2px solid var(--n1-gold); background: var(--n1-dark); color: var(--n1-gold); width: 100%; transition: 0.3s; }
-        .btn-action:hover { background: var(--n1-gold); color: var(--n1-dark); }
-        .edit-btn { background: #2980b9; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 5px; }
-        .delete-btn { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        .result-item { background: #fdfdfd; padding: 15px; border-radius: 12px; border: 1px solid #eee; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; }
+        :root { --gold: #d4af37; --dark: #1a1a1a; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; text-align: center; }
+        .nav-top { background: var(--dark); padding: 15px; border-bottom: 3px solid var(--gold); display: flex; justify-content: space-around; }
+        .nav-top a { color: var(--gold); text-decoration: none; font-weight: bold; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 8px; }
+        .header { background: var(--dark); color: var(--gold); padding: 25px; }
+        .container { max-width: 800px; margin: 20px auto; padding: 15px; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn-main { background: var(--dark); color: var(--gold); border: 2px solid var(--gold); padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .table-res { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table-res th { background: #3498db; color: white; padding: 10px; }
+        .table-res td { border: 1px solid #eee; padding: 10px; background: white; }
+        .btn-edit { background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin: 2px; }
+        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin: 2px; }
+        #status { display: none; padding: 10px; border-radius: 8px; margin: 10px; font-weight: bold; }
+        .logout-btn { background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="admin-bar">
-    <div style="color: var(--n1-gold); font-weight: bold;">لوحة تحكم حبة السكر 😊</div>
-    <button class="logout-btn" onclick="adminLogout()">تسجيل خروج 🔒</button>
+<div class="nav-top">
+    <a href="index.html">الرئيسية 🏠</a>
+    <a href="company_dashboard.html">الجرد 📊</a>
+    <a href="n1_pro.html" style="background: var(--gold); color: var(--dark);">التحكم ✨</a>
 </div>
 
-<div class="header-pro">
-    <h1>نظام N1 الاحترافي - الإدارة الكاملة 😊</h1>
-    <p>تحكم، تعديل، وحذف الطلبات مباشرة من السحابة</p>
+<div class="header">
+    <h1>لوحة تحكم حبة السكر 😊</h1>
+    <p>إدارة الطلبات، التعديل، والحذف المباشر</p>
 </div>
 
-<div class="main-container">
-    <div class="card-pro">
-        <h3>البحث والتحكم في طلبات الكباتن 😊</h3>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="searchInp" placeholder="ابحث باسم المندوب لتعديل أو حذف طلبه...">
-            <button class="btn-action" style="width: 120px;" onclick="fetchAndSearch()">بحث</button>
-        </div>
-        <div id="resultsList" style="margin-top: 20px;"></div>
+<div class="container">
+    <div class="card">
+        <h3>بحث وتحكم في الطلبات 😊</h3>
+        <input type="text" id="searchName" placeholder="اكتبي اسم المندوب للبحث..." style="width: 70%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
+        <button onclick="loadData()" class="btn-main" style="width: 25%; display: inline-block;">بحث 🔍</button>
+        <div id="status"></div>
+        
+        <table class="table-res">
+            <thead>
+                <tr>
+                    <th>الموقع</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                </tbody>
+        </table>
     </div>
-
-    <div class="grid-pro" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
-        <div class="card-pro">
-            <h3>إضافة طلب جديد 😊</h3>
-            <form id="orderForm">
-                <input type="text" name="name" placeholder="اسم المندوب" required>
-                <input type="text" name="phone" placeholder="رقم الهاتف" required>
-                <select name="location">
-                    <option value="عمان">عمان</option>
-                    <option value="الزرقاء">الزرقاء</option>
-                </select>
-                <input type="number" name="delivery" placeholder="الأجرة" required>
-                <select name="status">
-                    <option value="قيد التوصيل">قيد التوصيل 🚚</option>
-                    <option value="تم التسليم">تم التسليم ✅</option>
-                    <option value="ملغي">ملغي ❌</option>
-                </select>
-                <button type="submit" class="btn-action" id="subBtn">تأكيد الإرسال 😊</button>
-            </form>
-        </div>
-
-        <div class="card-pro">
-            <h3>حالة النظام 😊</h3>
-            <div id="statsDisplay" style="text-align: center; font-size: 1.2rem; color: var(--n1-dark);">
-                <p>عدد الطلبات الحالية: <span id="cCount" style="color: var(--n1-gold); font-weight: bold;">0</span></p>
-                <hr>
-                <p>إجمالي الأرباح: <span id="mCount" style="color: var(--n1-gold); font-weight: bold;">0.00</span> JOD</p>
-            </div>
-        </div>
-    </div>
+    
+    <button class="logout-btn" onclick="logout()">حفظ وإغلاق النظام 🔒</button>
 </div>
 
 <script>
-    const API_URL = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
+    const API = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
 
-    function adminLogout() {
-        if(confirm('بدك تسجلي خروج يا حبة السكر 😊؟')) {
-            document.body.innerHTML = '<div style="text-align:center; margin-top:100px;"><h1>تم تسجيل الخروج بأمان 😊</h1><p>نراكِ قريباً يا بطلة</p></div>';
-        }
-    }
-
-    // إرسال البيانات
-    document.getElementById('orderForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('subBtn');
-        btn.innerText = 'جاري الإرسال السحابي... 😊';
-        const data = Object.fromEntries(new FormData(e.target).entries());
-        data.date = new Date().toLocaleDateString('ar-EG');
+    // تحميل البيانات وتفعيل الأزرار 😊
+    async function loadData() {
+        const query = document.getElementById('searchName').value;
+        const body = document.getElementById('resultBody');
+        body.innerHTML = 'جاري جلب البيانات... 😊';
 
         try {
-            await fetch(API_URL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({data: [data]})
-            });
-            alert('تم الإضافة بنجاح 😊');
-            e.target.reset();
-            fetchAndSearch(); 
-        } catch(err) { alert('مشكلة في الربط! 😊'); }
-        finally { btn.innerText = 'تأكيد الإرسال 😊'; }
-    });
-
-    // البحث مع ميزة الحذف والتعديل
-    async function fetchAndSearch() {
-        const query = document.getElementById('searchInp').value;
-        const list = document.getElementById('resultsList');
-        list.innerHTML = 'جاري جلب البيانات من السحابة... 😊';
-
-        try {
-            const res = await fetch(API_URL);
+            const res = await fetch(API);
             const data = await res.json();
-            list.innerHTML = '';
-            
+            body.innerHTML = '';
+
             const filtered = data.filter(item => item.name.includes(query));
-            filtered.forEach((item, index) => {
-                list.innerHTML += `
-                    <div class="result-item">
-                        <div>
-                            <strong>${item.name}</strong> - ${item.status} <br>
-                            <small>${item.phone} | ${item.delivery} JOD</small>
-                        </div>
-                        <div>
-                            <button class="edit-btn" onclick="editRow('${item.name}')">تعديل</button>
-                            <button class="delete-btn" onclick="deleteRow('${item.name}')">حذف</button>
-                        </div>
-                    </div>
+            filtered.forEach(item => {
+                body.innerHTML += `
+                    <tr>
+                        <td>${item.location} (${item.name})</td>
+                        <td>
+                            <button class="btn-edit" onclick="editOrder('${item.name}')">تعديل</button>
+                            <button class="btn-delete" onclick="deleteOrder('${item.name}')">حذف</button>
+                        </td>
+                    </tr>
                 `;
             });
-            document.getElementById('cCount').innerText = data.length;
-        } catch(e) { list.innerHTML = 'حدث خطأ في الاتصال 😊'; }
+        } catch (e) { alert('في مشكلة بالاتصال يا بطة 😊'); }
     }
 
-    // ميزة الحذف (تستخدم اسم المندوب كمفتاح)
-    async function deleteRow(name) {
-        if(confirm(`هل أنتِ متأكدة من حذف طلب ${name} نهائياً 😊؟`)) {
+    // وظيفة الحذف الحقيقية 😊
+    async function deleteOrder(name) {
+        if(confirm(`بدك تحذفي طلب ${name} نهائياً 😊؟`)) {
+            const status = document.getElementById('status');
+            status.style.display = 'block'; status.innerText = 'جاري الحذف من السحابة...';
+            
             try {
-                await fetch(`${API_URL}/name/${name}`, { method: 'DELETE' });
-                alert('تم الحذف بنجاح من الإكسل 😊');
-                fetchAndSearch();
-            } catch(e) { alert('لم نتمكن من الحذف حالياً 😊'); }
+                await fetch(`${API}/name/${name}`, { method: 'DELETE' });
+                status.style.background = '#d4edda'; status.innerText = 'تم الحذف بنجاح 😊';
+                loadData(); // تحديث القائمة
+            } catch (e) { alert('المشاكسة منعت الحذف! 😊'); }
         }
     }
 
-    // ميزة التعديل
-    function editRow(name) {
-        const newStatus = prompt(`تغيير حالة طلب ${name} إلى: (تم التسليم / ملغي / قيد التوصيل) 😊`);
-        if(newStatus) {
-            fetch(`${API_URL}/name/${name}`, {
+    // وظيفة التعديل الحقيقية 😊
+    async function editOrder(name) {
+        const newLoc = prompt(`تعديل الموقع لـ ${name}:`);
+        if(newLoc) {
+            await fetch(`${API}/name/${name}`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({data: {status: newStatus}})
-            }).then(() => {
-                alert('تم تحديث الحالة بنجاح 😊');
-                fetchAndSearch();
+                body: JSON.stringify({data: {location: newLoc}})
             });
+            alert('تم التعديل بكل رقي 😊');
+            loadData();
+        }
+    }
+
+    function logout() {
+        if(confirm('بدك تسكري النظام يا غالية 😊؟')) {
+            document.body.innerHTML = '<h1>تم الحفظ والإغلاق بنجاح 😊 نراكِ لاحقاً يا حبة السكر</h1>';
         }
     }
 </script>

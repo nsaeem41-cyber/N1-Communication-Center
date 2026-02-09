@@ -3,68 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N1 Pro - نظام الإدارة الملكي 😊</title>
+    <title>N1 Pro - الإدارة الملكية 😊</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --n1-gold: #d4af37; --n1-dark: #121212; --n1-soft: #1e1e1e; --n1-white: #ffffff; --n1-danger: #ff4d4d; --n1-success: #00c851; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--n1-dark); margin: 0; padding: 0; color: var(--n1-white); direction: rtl; }
-        .n1-navbar { background: linear-gradient(145deg, #1a1a1a, #000); padding: 15px; display: flex; justify-content: center; gap: 15px; border-bottom: 2px solid var(--n1-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .n1-navbar a { color: var(--n1-gold); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid var(--n1-gold); border-radius: 50px; font-size: 14px; transition: 0.4s; }
-        .n1-navbar a:hover, .n1-navbar a.active { background: var(--n1-gold); color: var(--n1-dark); box-shadow: 0 0 15px var(--n1-gold); }
-        .n1-header { padding: 40px 20px; text-align: center; background: radial-gradient(circle, #2c2c2c 0%, #121212 100%); }
-        .n1-header h1 { color: var(--n1-gold); font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .n1-container { max-width: 1100px; margin: -30px auto 50px; padding: 20px; }
-        .n1-card { background: var(--n1-soft); border-radius: 25px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 30px; }
-        .n1-tabs { display: flex; gap: 15px; margin-bottom: 25px; }
-        .n1-tab-btn { flex: 1; padding: 15px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; background: #2a2a2a; color: #888; transition: 0.3s; font-size: 16px; }
-        .n1-tab-btn.active { background: var(--n1-gold); color: var(--n1-dark); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
-        .search-bar { display: flex; gap: 10px; margin-bottom: 25px; }
-        .n1-input { flex: 1; padding: 15px; background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 15px; color: white; outline: none; transition: 0.3s; }
-        .n1-input:focus { border-color: var(--n1-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        .n1-btn { background: var(--n1-gold); color: var(--n1-dark); border: none; padding: 15px 30px; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .n1-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-        .n1-table-wrapper { overflow-x: auto; border-radius: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #1e1e1e; }
-        th { background: #2a2a2a; color: var(--n1-gold); padding: 15px; text-align: center; border-bottom: 2px solid #333; }
-        td { padding: 15px; text-align: center; border-bottom: 1px solid #2a2a2a; font-size: 14px; }
-        tr:hover { background: #252525; }
-        .action-btn { padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; margin: 2px; }
-        .btn-edit { background: #3498db; color: white; }
-        .btn-del { background: var(--n1-danger); color: white; }
-        #status { display: none; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; font-weight: bold; }
+        :root { --gold: #d4af37; --dark: #121212; --soft: #1e1e1e; --white: #ffffff; --danger: #ff4d4d; --success: #00c851; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--dark); margin: 0; padding: 0; color: var(--white); direction: rtl; }
+        .nav-n1 { background: linear-gradient(145deg, #1a1a1a, #000); padding: 15px; display: flex; justify-content: center; gap: 12px; border-bottom: 2px solid var(--gold); position: sticky; top: 0; z-index: 1000; }
+        .nav-n1 a { color: var(--gold); text-decoration: none; font-weight: bold; padding: 8px 15px; border: 1px solid var(--gold); border-radius: 50px; font-size: 13px; transition: 0.3s; }
+        .nav-n1 a:hover { background: var(--gold); color: var(--dark); }
+        .header { padding: 30px; text-align: center; background: radial-gradient(circle, #2c2c2c 0%, #121212 100%); }
+        .header h1 { color: var(--gold); font-size: 2rem; margin: 0; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 15px; }
+        .card { background: var(--soft); border-radius: 20px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; border: 1px solid rgba(212, 175, 55, 0.1); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; background: #2a2a2a; color: #888; transition: 0.3s; }
+        .tab-btn.active { background: var(--gold); color: var(--dark); }
+        .search-area { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 12px; color: white; outline: none; }
+        .btn-main { background: var(--gold); color: var(--dark); border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .table-wrap { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; background: #1e1e1e; }
+        th { background: #2a2a2a; color: var(--gold); padding: 12px; font-size: 14px; border-bottom: 2px solid #333; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #2a2a2a; font-size: 13px; }
+        .act-btn { padding: 6px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 11px; font-weight: bold; margin: 2px; }
+        .b-edit { background: #3498db; color: white; }
+        .b-del { background: var(--danger); color: white; }
+        #status { display: none; padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<nav class="n1-navbar">
-    <a href="index.html">البوابة الرئيسية 🏠</a>
-    <a href="company_dashboard.html">لوحة الإنجازات 📊</a>
-    <a href="n1_pro.html" class="active">الإدارة الذكية ✨</a>
+<nav class="nav-n1">
+    <a href="index.html">البوابة 🏠</a>
+    <a href="company_dashboard.html">الجرد 📊</a>
+    <a href="admin_n1.html" style="background:var(--gold); color:var(--dark);">التحكم الملكي ✨</a>
 </nav>
 
-<div class="n1-header">
-    <h1>مركز تحكم N1 السحابي 😊</h1>
-    <p style="color: #888;">إدارة المنشآت والطلبات بكل رقي</p>
+<div class="header">
+    <h1>نظام N1 - الإدارة المركزية 😊</h1>
+    <p style="color:#888; font-size:14px;">تحكم كامل بالشركات والطلبات بكل رقي</p>
 </div>
 
-<div class="n1-container">
+<div class="container">
     <div id="status"></div>
-
-    <div class="n1-card">
-        <div class="n1-tabs">
-            <button class="n1-tab-btn active" onclick="switchMode('orders', this)">طلبات المناديب 🚚</button>
-            <button class="n1-tab-btn" onclick="switchMode('companies', this)">تفعيل المنشآت 🏢</button>
+    <div class="card">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('orders', this)">طلبات المناديب 🚚</button>
+            <button class="tab-btn" onclick="switchTab('comps', this)">تفعيل المنشآت 🏢</button>
         </div>
-
-        <div class="search-bar">
-            <input type="text" id="n1Search" class="n1-input" placeholder="ابحث في السحابة عن أي اسم أو رقم...">
-            <button class="n1-btn" onclick="syncData()">تحديث وبحث 🔄</button>
+        <div class="search-area">
+            <input type="text" id="inpS" placeholder="ابحث في السحابة عن أي معلومة...">
+            <button class="btn-main" onclick="loadCloud()">تحديث 🔄</button>
         </div>
-
-        <div class="n1-table-wrapper">
-            <table id="mainTable">
-                <thead id="n1Head"></thead>
-                <tbody id="n1Body"></tbody>
+        <div class="table-wrap">
+            <table id="tbl">
+                <thead id="thd"></thead>
+                <tbody id="tbd"></tbody>
             </table>
         </div>
     </div>
@@ -72,89 +66,69 @@
 
 <script>
     const API = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
-    let currentMode = 'orders';
+    let mode = 'orders';
 
-    function switchMode(mode, btn) {
-        currentMode = mode;
-        document.querySelectorAll('.n1-tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        syncData();
-    }
-
-    async function syncData() {
-        const body = document.getElementById('n1Body');
-        const head = document.getElementById('n1Head');
-        const query = document.getElementById('n1Search').value.toLowerCase();
-        body.innerHTML = '<tr><td colspan="5">جاري جلب البيانات من السحابة... 😊</td></tr>';
-
+    async function loadCloud() {
+        const b = document.getElementById('tbd');
+        const h = document.getElementById('thd');
+        const q = document.getElementById('inpS').value.toLowerCase();
+        b.innerHTML = '<tr><td colspan="5">جاري سحب البيانات من السحابة... 😊</td></tr>';
         try {
-            const res = await fetch(API);
-            const data = await res.json();
-            body.innerHTML = '';
-
-            if (currentMode === 'orders') {
-                head.innerHTML = '<tr><th>المندوب</th><th>الموقع</th><th>الأجرة</th><th>التاريخ</th><th>إجراء</th></tr>';
-                const orders = data.filter(o => o.phone && o.location && (o.name.toLowerCase().includes(query) || o.phone.includes(query)));
-                orders.reverse().forEach(o => {
-                    body.innerHTML += `<tr>
-                        <td style="color:var(--n1-gold)">${o.name}</td>
-                        <td>${o.location}</td>
-                        <td style="font-weight:bold">${o.delivery} JOD</td>
-                        <td style="font-size:11px; color:#666">${o.date || '-'}</td>
-                        <td>
-                            <button class="action-btn btn-edit" onclick="editRow('${o.id}', 'delivery', '${o.delivery}')">تعديل</button>
-                            <button class="action-btn btn-del" onclick="deleteRow('${o.id}')">حذف</button>
-                        </td>
-                    </tr>`;
+            const r = await fetch(API);
+            const d = await r.json();
+            b.innerHTML = '';
+            if (mode === 'orders') {
+                h.innerHTML = '<tr><th>المندوب</th><th>الموقع</th><th>الأجرة</th><th>التاريخ</th><th>إجراء</th></tr>';
+                d.filter(o => o.phone && o.location && o.name.toLowerCase().includes(q)).reverse().forEach(o => {
+                    b.innerHTML += `<tr><td style="color:var(--gold)">${o.name}</td><td>${o.location}</td><td style="font-weight:bold">${o.delivery}</td><td style="font-size:10px">${o.date || '-'}</td><td>
+                        <button class="act-btn b-edit" onclick="editR('${o.id}','delivery','${o.delivery}')">تعديل</button>
+                        <button class="act-btn b-del" onclick="delR('${o.id}')">حذف</button></td></tr>`;
                 });
             } else {
-                head.innerHTML = '<tr><th>المنشأة</th><th>المستخدم</th><th>انتهاء الاشتراك</th><th>الحالة</th><th>إجراء</th></tr>';
-                const comps = data.filter(c => c.user && c.pass && c.name.toLowerCase().includes(query));
-                comps.forEach(c => {
-                    const isExpired = new Date() > new Date(c.expiry);
-                    body.innerHTML += `<tr>
-                        <td style="color:var(--n1-gold)">${c.name}</td>
-                        <td>${c.user}</td>
-                        <td>${new Date(c.expiry).toLocaleDateString('ar-EG')}</td>
-                        <td><span style="color:${isExpired ? 'var(--n1-danger)' : 'var(--n1-success)'}">${isExpired ? 'منتهي ❌' : 'نشط ✅'}</span></td>
-                        <td><button class="action-btn btn-del" onclick="deleteRow('${c.id}')">إلغاء</button></td>
-                    </tr>`;
+                h.innerHTML = '<tr><th>المنشأة</th><th>المستخدم</th><th>الانتهاء</th><th>الحالة</th><th>إجراء</th></tr>';
+                d.filter(c => c.user && c.pass && c.name.toLowerCase().includes(q)).forEach(c => {
+                    const ex = new Date() > new Date(c.expiry);
+                    b.innerHTML += `<tr><td style="color:var(--gold)">${c.name}</td><td>${c.user}</td><td>${new Date(c.expiry).toLocaleDateString('ar-EG')}</td>
+                        <td style="color:${ex ? 'var(--danger)':'var(--success)'}">${ex ? 'منتهي':'نشط'}</td>
+                        <td><button class="act-btn b-del" onclick="delR('${c.id}')">إلغاء</button></td></tr>`;
                 });
             }
-        } catch (e) { body.innerHTML = '<tr><td colspan="5">في مشاكسة بالسحابة يا بطة 😊</td></tr>'; }
+        } catch (e) { b.innerHTML = '<tr><td colspan="5">مشاكسة سحابية! 😊</td></tr>'; }
     }
 
-    async function deleteRow(id) {
-        if(confirm('يا حبة السكر، متأكدة من الحذف النهائي من السحابة 😊؟')) {
-            showNotify('جاري المسح السحابي... 😊', 'var(--n1-gold)');
+    async function delR(id) {
+        if(confirm('متأكدة من الحذف السحابي يا حبة السكر 😊؟')) {
+            msg('جاري الحذف... 😊', 'var(--gold)');
             await fetch(`${API}/id/${id}`, { method: 'DELETE' });
-            showNotify('تم الحذف بكل رقي 😊', 'var(--n1-success)');
-            syncData();
+            msg('تم الحذف بنجاح 😊', 'var(--success)');
+            loadCloud();
         }
     }
 
-    async function editRow(id, field, oldVal) {
-        const newVal = prompt(`تعديل ${field}:`, oldVal);
-        if(newVal) {
-            showNotify('جاري تحديث البيانات... 😊', 'var(--n1-gold)');
-            await fetch(`${API}/id/${id}`, {
-                method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({data: {[field]: newVal}})
-            });
-            showNotify('تم التعديل بنجاح 😊', 'var(--n1-success)');
-            syncData();
+    async function editR(id, f, v) {
+        const n = prompt(`تعديل ${f}:`, v);
+        if(n) {
+            msg('جاري التعديل... 😊', 'var(--gold)');
+            await fetch(`${API}/id/${id}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({data: {[f]: n}}) });
+            msg('تم التعديل بكل رقي 😊', 'var(--success)');
+            loadCloud();
         }
     }
 
-    function showNotify(msg, color) {
+    function switchTab(m, b) {
+        mode = m;
+        document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        loadCloud();
+    }
+
+    function msg(m, c) {
         const s = document.getElementById('status');
-        s.style.display = 'block'; s.innerText = msg;
-        s.style.background = color; s.style.color = 'black';
+        s.style.display = 'block'; s.innerText = m; s.style.background = c; s.style.color = 'black';
         setTimeout(() => s.style.display = 'none', 3000);
     }
 
-    window.onload = syncData;
+    window.onload = loadCloud;
 </script>
 </body>
 </html>

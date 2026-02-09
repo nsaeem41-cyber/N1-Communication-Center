@@ -3,94 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N1 Pro - الربط الموحد 😊</title>
+    <title>N1 Pro - نظام الإدارة الملكي 😊</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --n1-gold: #d4af37; --n1-dark: #1a1a1a; --n1-gray: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--n1-gray); margin: 0; padding: 0; color: var(--n1-dark); text-align: center; }
-        .nav-bar { background: var(--n1-dark); padding: 15px; border-bottom: 3px solid var(--n1-gold); display: flex; justify-content: center; gap: 10px; }
-        .nav-bar a { color: var(--n1-gold); text-decoration: none; border: 1px solid var(--n1-gold); padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; }
-        .header { background: var(--n1-dark); color: var(--n1-gold); padding: 30px; }
-        .card { background: white; margin: 20px auto; padding: 25px; border-radius: 20px; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-n1 { background: var(--n1-dark); color: var(--n1-gold); border: 2px solid var(--n1-gold); padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
-        .res-box { margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; }
-        .item { background: #fffdf5; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; }
+        :root { --n1-gold: #d4af37; --n1-dark: #121212; --n1-soft: #1e1e1e; --n1-white: #ffffff; --n1-danger: #ff4d4d; --n1-success: #00c851; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--n1-dark); margin: 0; padding: 0; color: var(--n1-white); direction: rtl; }
+        .n1-navbar { background: linear-gradient(145deg, #1a1a1a, #000); padding: 15px; display: flex; justify-content: center; gap: 15px; border-bottom: 2px solid var(--n1-gold); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .n1-navbar a { color: var(--n1-gold); text-decoration: none; font-weight: bold; padding: 10px 20px; border: 1px solid var(--n1-gold); border-radius: 50px; font-size: 14px; transition: 0.4s; }
+        .n1-navbar a:hover, .n1-navbar a.active { background: var(--n1-gold); color: var(--n1-dark); box-shadow: 0 0 15px var(--n1-gold); }
+        .n1-header { padding: 40px 20px; text-align: center; background: radial-gradient(circle, #2c2c2c 0%, #121212 100%); }
+        .n1-header h1 { color: var(--n1-gold); font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .n1-container { max-width: 1100px; margin: -30px auto 50px; padding: 20px; }
+        .n1-card { background: var(--n1-soft); border-radius: 25px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 30px; }
+        .n1-tabs { display: flex; gap: 15px; margin-bottom: 25px; }
+        .n1-tab-btn { flex: 1; padding: 15px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; background: #2a2a2a; color: #888; transition: 0.3s; font-size: 16px; }
+        .n1-tab-btn.active { background: var(--n1-gold); color: var(--n1-dark); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 25px; }
+        .n1-input { flex: 1; padding: 15px; background: #2a2a2a; border: 1px solid #3d3d3d; border-radius: 15px; color: white; outline: none; transition: 0.3s; }
+        .n1-input:focus { border-color: var(--n1-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .n1-btn { background: var(--n1-gold); color: var(--n1-dark); border: none; padding: 15px 30px; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .n1-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .n1-table-wrapper { overflow-x: auto; border-radius: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #1e1e1e; }
+        th { background: #2a2a2a; color: var(--n1-gold); padding: 15px; text-align: center; border-bottom: 2px solid #333; }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid #2a2a2a; font-size: 14px; }
+        tr:hover { background: #252525; }
+        .action-btn { padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; margin: 2px; }
+        .btn-edit { background: #3498db; color: white; }
+        .btn-del { background: var(--n1-danger); color: white; }
+        #status { display: none; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="nav-bar">
-    <a href="index.html">الصفحة 1 🏠</a>
-    <a href="company_dashboard.html">الصفحة 2 📊</a>
-    <a href="n1_pro.html" style="background: var(--n1-gold); color: var(--n1-dark);">تحكم N1 ✨</a>
+<nav class="n1-navbar">
+    <a href="index.html">البوابة الرئيسية 🏠</a>
+    <a href="company_dashboard.html">لوحة الإنجازات 📊</a>
+    <a href="n1_pro.html" class="active">الإدارة الذكية ✨</a>
+</nav>
+
+<div class="n1-header">
+    <h1>مركز تحكم N1 السحابي 😊</h1>
+    <p style="color: #888;">إدارة المنشآت والطلبات بكل رقي</p>
 </div>
 
-<div class="header">
-    <h1>لوحة التحكم الموحدة 😊</h1>
-    <p>هنا نتحكم بكل ما يتم إدخاله في الأكواد السابقة</p>
-</div>
+<div class="n1-container">
+    <div id="status"></div>
 
-<div class="card">
-    <h3>إضافة طلب ومزامنته مع الأكواد القديمة 😊</h3>
-    <input type="text" id="custName" placeholder="اسم المندوب أو الكابتن">
-    <input type="text" id="custLoc" placeholder="الموقع">
-    <button class="btn-n1" onclick="sendData()">إرسال ومزامنة للسحابة 🚀</button>
-</div>
+    <div class="n1-card">
+        <div class="n1-tabs">
+            <button class="n1-tab-btn active" onclick="switchMode('orders', this)">طلبات المناديب 🚚</button>
+            <button class="n1-tab-btn" onclick="switchMode('companies', this)">تفعيل المنشآت 🏢</button>
+        </div>
 
-<div class="card">
-    <h3>عرض وتعديل بيانات الأكواد السابقة 😊</h3>
-    <button class="btn-n1" onclick="getData()" style="background: #27ae60; color: white; border: none;">تحديث البيانات من الإكسل 🔄</button>
-    <div id="resList" class="res-box"></div>
+        <div class="search-bar">
+            <input type="text" id="n1Search" class="n1-input" placeholder="ابحث في السحابة عن أي اسم أو رقم...">
+            <button class="n1-btn" onclick="syncData()">تحديث وبحث 🔄</button>
+        </div>
+
+        <div class="n1-table-wrapper">
+            <table id="mainTable">
+                <thead id="n1Head"></thead>
+                <tbody id="n1Body"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script>
-    // الجسر الموحد اللي بيحكي مع الإكسل الأصلي 😊
     const API = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
+    let currentMode = 'orders';
 
-    async function sendData() {
-        const name = document.getElementById('custName').value;
-        const loc = document.getElementById('custLoc').value;
-        if(!name || !loc) return alert('عبي البيانات يا حبة السكر 😊');
-
-        try {
-            await fetch(API, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ data: [{ name: name, location: loc, date: new Date().toLocaleDateString('ar-EG') }] })
-            });
-            alert('تم الحفظ والمزامنة مع كل الأكواد 😊');
-            getData();
-        } catch (e) { alert('في مشاكسة بالجسر 😊'); }
+    function switchMode(mode, btn) {
+        currentMode = mode;
+        document.querySelectorAll('.n1-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        syncData();
     }
 
-    async function getData() {
-        const list = document.getElementById('resList');
-        list.innerHTML = 'جاري سحب البيانات من السحابة... 😊';
+    async function syncData() {
+        const body = document.getElementById('n1Body');
+        const head = document.getElementById('n1Head');
+        const query = document.getElementById('n1Search').value.toLowerCase();
+        body.innerHTML = '<tr><td colspan="5">جاري جلب البيانات من السحابة... 😊</td></tr>';
+
         try {
             const res = await fetch(API);
             const data = await res.json();
-            list.innerHTML = '';
-            data.forEach(item => {
-                list.innerHTML += `
-                    <div class="item">
-                        <div style="text-align: right;">
-                            <strong>${item.name}</strong> <br> <small>${item.location}</small>
-                        </div>
-                        <button class="btn-del" onclick="deleteItem('${item.name}')">حذف ❌</button>
-                    </div>
-                `;
-            });
-        } catch (e) { list.innerHTML = 'تأكدي من اتصال السحابة يا بطة 😊'; }
+            body.innerHTML = '';
+
+            if (currentMode === 'orders') {
+                head.innerHTML = '<tr><th>المندوب</th><th>الموقع</th><th>الأجرة</th><th>التاريخ</th><th>إجراء</th></tr>';
+                const orders = data.filter(o => o.phone && o.location && (o.name.toLowerCase().includes(query) || o.phone.includes(query)));
+                orders.reverse().forEach(o => {
+                    body.innerHTML += `<tr>
+                        <td style="color:var(--n1-gold)">${o.name}</td>
+                        <td>${o.location}</td>
+                        <td style="font-weight:bold">${o.delivery} JOD</td>
+                        <td style="font-size:11px; color:#666">${o.date || '-'}</td>
+                        <td>
+                            <button class="action-btn btn-edit" onclick="editRow('${o.id}', 'delivery', '${o.delivery}')">تعديل</button>
+                            <button class="action-btn btn-del" onclick="deleteRow('${o.id}')">حذف</button>
+                        </td>
+                    </tr>`;
+                });
+            } else {
+                head.innerHTML = '<tr><th>المنشأة</th><th>المستخدم</th><th>انتهاء الاشتراك</th><th>الحالة</th><th>إجراء</th></tr>';
+                const comps = data.filter(c => c.user && c.pass && c.name.toLowerCase().includes(query));
+                comps.forEach(c => {
+                    const isExpired = new Date() > new Date(c.expiry);
+                    body.innerHTML += `<tr>
+                        <td style="color:var(--n1-gold)">${c.name}</td>
+                        <td>${c.user}</td>
+                        <td>${new Date(c.expiry).toLocaleDateString('ar-EG')}</td>
+                        <td><span style="color:${isExpired ? 'var(--n1-danger)' : 'var(--n1-success)'}">${isExpired ? 'منتهي ❌' : 'نشط ✅'}</span></td>
+                        <td><button class="action-btn btn-del" onclick="deleteRow('${c.id}')">إلغاء</button></td>
+                    </tr>`;
+                });
+            }
+        } catch (e) { body.innerHTML = '<tr><td colspan="5">في مشاكسة بالسحابة يا بطة 😊</td></tr>'; }
     }
 
-    async function deleteItem(name) {
-        if(confirm(`بدك تحذفي طلب ${name} من كل الأكواد 😊؟`)) {
-            await fetch(`${API}/name/${name}`, { method: 'DELETE' });
-            alert('تم المسح السحابي بنجاح 😊');
-            getData();
+    async function deleteRow(id) {
+        if(confirm('يا حبة السكر، متأكدة من الحذف النهائي من السحابة 😊؟')) {
+            showNotify('جاري المسح السحابي... 😊', 'var(--n1-gold)');
+            await fetch(`${API}/id/${id}`, { method: 'DELETE' });
+            showNotify('تم الحذف بكل رقي 😊', 'var(--n1-success)');
+            syncData();
         }
     }
+
+    async function editRow(id, field, oldVal) {
+        const newVal = prompt(`تعديل ${field}:`, oldVal);
+        if(newVal) {
+            showNotify('جاري تحديث البيانات... 😊', 'var(--n1-gold)');
+            await fetch(`${API}/id/${id}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({data: {[field]: newVal}})
+            });
+            showNotify('تم التعديل بنجاح 😊', 'var(--n1-success)');
+            syncData();
+        }
+    }
+
+    function showNotify(msg, color) {
+        const s = document.getElementById('status');
+        s.style.display = 'block'; s.innerText = msg;
+        s.style.background = color; s.style.color = 'black';
+        setTimeout(() => s.style.display = 'none', 3000);
+    }
+
+    window.onload = syncData;
 </script>
 </body>
 </html>

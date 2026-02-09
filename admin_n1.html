@@ -2,50 +2,93 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>N1 Pro - السحابة الحقيقية 😊</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N1 Pro - الربط الموحد 😊</title>
     <style>
-        body { font-family: sans-serif; background: #1a1a1a; color: #d4af37; text-align: center; padding: 50px; }
-        .box { border: 2px solid #d4af37; padding: 20px; border-radius: 20px; background: #222; max-width: 500px; margin: auto; }
-        button { background: #d4af37; color: #1a1a1a; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
-        #log { margin-top: 20px; color: #27ae60; font-weight: bold; }
+        :root { --n1-gold: #d4af37; --n1-dark: #1a1a1a; --n1-gray: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--n1-gray); margin: 0; padding: 0; color: var(--n1-dark); text-align: center; }
+        .nav-bar { background: var(--n1-dark); padding: 15px; border-bottom: 3px solid var(--n1-gold); display: flex; justify-content: center; gap: 10px; }
+        .nav-bar a { color: var(--n1-gold); text-decoration: none; border: 1px solid var(--n1-gold); padding: 5px 12px; border-radius: 8px; font-weight: bold; font-size: 14px; }
+        .header { background: var(--n1-dark); color: var(--n1-gold); padding: 30px; }
+        .card { background: white; margin: 20px auto; padding: 25px; border-radius: 20px; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-n1 { background: var(--n1-dark); color: var(--n1-gold); border: 2px solid var(--n1-gold); padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .res-box { margin-top: 20px; border-top: 2px solid #eee; padding-top: 20px; }
+        .item { background: #fffdf5; border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-del { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h1>نظام N1 السحابي الأصلي 😊</h1>
-    <p>هذا النظام مرتبط بملف "N One Database" مباشرة</p>
-    
-    <input type="text" id="testName" placeholder="اكتبي اسم تجريبي هنا..." style="width: 80%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-    <br>
-    <button onclick="sendToCloud()">إرسال للسحابة الآن 🚀</button>
-    
-    <div id="log"></div>
+<div class="nav-bar">
+    <a href="index.html">الصفحة 1 🏠</a>
+    <a href="company_dashboard.html">الصفحة 2 📊</a>
+    <a href="n1_pro.html" style="background: var(--n1-gold); color: var(--n1-dark);">تحكم N1 ✨</a>
+</div>
+
+<div class="header">
+    <h1>لوحة التحكم الموحدة 😊</h1>
+    <p>هنا نتحكم بكل ما يتم إدخاله في الأكواد السابقة</p>
+</div>
+
+<div class="card">
+    <h3>إضافة طلب ومزامنته مع الأكواد القديمة 😊</h3>
+    <input type="text" id="custName" placeholder="اسم المندوب أو الكابتن">
+    <input type="text" id="custLoc" placeholder="الموقع">
+    <button class="btn-n1" onclick="sendData()">إرسال ومزامنة للسحابة 🚀</button>
+</div>
+
+<div class="card">
+    <h3>عرض وتعديل بيانات الأكواد السابقة 😊</h3>
+    <button class="btn-n1" onclick="getData()" style="background: #27ae60; color: white; border: none;">تحديث البيانات من الإكسل 🔄</button>
+    <div id="resList" class="res-box"></div>
 </div>
 
 <script>
+    // الجسر الموحد اللي بيحكي مع الإكسل الأصلي 😊
     const API = 'https://sheetdb.io/api/v1/qzfkwfzcpbrsm';
 
-    async function sendToCloud() {
-        const name = document.getElementById('testName').value;
-        const log = document.getElementById('log');
-        log.innerText = 'جاري الاتصال بالسحابة... 😊';
-        
+    async function sendData() {
+        const name = document.getElementById('custName').value;
+        const loc = document.getElementById('custLoc').value;
+        if(!name || !loc) return alert('عبي البيانات يا حبة السكر 😊');
+
         try {
-            const res = await fetch(API, {
+            await fetch(API, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ data: [{ name: name, date: new Date().toLocaleString() }] })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ data: [{ name: name, location: loc, date: new Date().toLocaleDateString('ar-EG') }] })
             });
-            
-            if(res.ok) {
-                log.innerText = '✅ بشارة يا حبة السكر! المعلومة طارت للسحابة ونزلت بالإكسل فوراً 😊';
-                document.getElementById('testName').value = '';
-            } else {
-                log.innerText = '❌ في مشاكسة في الجسر! تأكدي من الربط 😊';
-            }
-        } catch (e) {
-            log.innerText = '❌ المتصفح مش قادر يوصل للسحابة.. تأكدي من الإنترنت 😊';
+            alert('تم الحفظ والمزامنة مع كل الأكواد 😊');
+            getData();
+        } catch (e) { alert('في مشاكسة بالجسر 😊'); }
+    }
+
+    async function getData() {
+        const list = document.getElementById('resList');
+        list.innerHTML = 'جاري سحب البيانات من السحابة... 😊';
+        try {
+            const res = await fetch(API);
+            const data = await res.json();
+            list.innerHTML = '';
+            data.forEach(item => {
+                list.innerHTML += `
+                    <div class="item">
+                        <div style="text-align: right;">
+                            <strong>${item.name}</strong> <br> <small>${item.location}</small>
+                        </div>
+                        <button class="btn-del" onclick="deleteItem('${item.name}')">حذف ❌</button>
+                    </div>
+                `;
+            });
+        } catch (e) { list.innerHTML = 'تأكدي من اتصال السحابة يا بطة 😊'; }
+    }
+
+    async function deleteItem(name) {
+        if(confirm(`بدك تحذفي طلب ${name} من كل الأكواد 😊؟`)) {
+            await fetch(`${API}/name/${name}`, { method: 'DELETE' });
+            alert('تم المسح السحابي بنجاح 😊');
+            getData();
         }
     }
 </script>
